@@ -74,4 +74,4 @@ Branch URLs count the branch's history. Add new files to this list yourself; syn
 
 ## Status
 
-See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Next: Phase 7 (calendar engine). Decisions: [docs/phase-1.md §31](docs/phase-1.md).
+See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Next: Phase 8 (heatmap UI). Decisions: [docs/phase-1.md §31](docs/phase-1.md).

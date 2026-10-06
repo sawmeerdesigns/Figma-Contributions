@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–6 complete · Next: Phase 7 (calendar engine)  
+**Status:** Phases 1–7 complete · Next: Phase 8 (heatmap UI)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -921,6 +921,8 @@ Test at least:
 
 Do not proceed until calendar positioning is correct.
 
+- [x] `src/lib/contributions/calendar.ts` (`buildYearCalendar`) passes `npm test`: normal year (2026), leap year (2024), years starting on every weekday with both Sunday and Monday starts, Jan 1 / Dec 31 positions, padding, month label columns, other years' days excluded. Note: "52/53 weeks" means ISO weeks; the grid always has 53 columns, or 54 when a leap year starts on the last weekday (e.g. 2028 with Sunday start).
+
 ---
 
 # PHASE 8 — Heatmap UI
@@ -1449,7 +1451,7 @@ Every phase produces something usable.
 [x] PHASE 4 — Figma API Client
 [x] PHASE 5 — Raw Data Processing
 [x] PHASE 6 — Contribution Engine
-[ ] PHASE 7 — Calendar Engine
+[x] PHASE 7 — Calendar Engine
 [ ] PHASE 8 — Heatmap UI
 [ ] PHASE 9 — Statistics Dashboard
 [ ] PHASE 10 — Year Navigation

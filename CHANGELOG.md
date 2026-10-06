@@ -4,7 +4,9 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
-Everything so far; the first release will be `0.1.0`.
+## [1.0.0] - 2026-10-07
+
+First release.
 
 ### Added
 
@@ -26,4 +28,5 @@ Everything so far; the first release will be `0.1.0`.
 
 - The Figma token is only read by the sync script and only sent to `https://api.figma.com`; the client refuses any other host, even one named in a pagination link.
 
-[Unreleased]: https://github.com/sawmeerdesigns/Figma-Contributions/commits/main
+[Unreleased]: https://github.com/sawmeerdesigns/Figma-Contributions/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sawmeerdesigns/Figma-Contributions/releases/tag/v1.0.0

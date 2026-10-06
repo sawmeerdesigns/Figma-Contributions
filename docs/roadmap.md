@@ -1358,6 +1358,20 @@ git push origin v1.0.0
 
 Create a GitHub Release.
 
+- [x] Release checklist verified 2026-10-07 on a **fresh clone of `origin/main`** (4eeec9c), not the working copy:
+  - **Clean install works:** `npm ci`; only `.env.example` tracked.
+  - **Environment setup works:** missing `.env.local` and the untouched `.env.example` placeholders both give the "is missing" message.
+  - **Figma API works / Sync works:** a real full sync (236 versions, 2 files, 8 requests), then incremental (4 requests). Incremental on the working copy picked up a new version (+1) and ended identical to the clone's full sync.
+  - **Data processing works:** the same data from full and incremental sync.
+  - **Heatmap / Statistics / Year navigation work:** production build shows 236 versions, 365 cells, stats 236 · 42 · 4 · 15 · Sep 24 · Sep 2026, both projects; `?year=2024` gives 366 cells, the empty state and year links 2026–2024.
+  - **Error handling works:** invalid key, invalid token (401), missing file (404, named, no data written).
+  - **Documentation works:** 21 local links and anchors and 5 external links resolve.
+  - **Secrets are excluded:** the token appears in no build output, data file or git history.
+  - **Tests pass:** 47/47, plus CI green on Node 22.18.
+  - **Demo works:** `DEMO_MODE=1` shows only demo data next to real data; live at https://figma-contributions.vercel.app.
+  - Version set to `1.0.0` in `package.json` and `CHANGELOG.md`.
+- [ ] `v1.0.0` tagged and GitHub Release published
+
 ---
 
 # 15. Final Architecture

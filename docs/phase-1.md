@@ -127,10 +127,10 @@ The user supplies:
 
 ```env
 FIGMA_ACCESS_TOKEN=your_token_here
-FIGMA_FILE_KEY=your_file_key_here
+FIGMA_FILE_KEYS=key1, https://www.figma.com/design/key2/...
 ```
 
-The token is stored in `.env.local` and must never be committed.
+One or more files, comma-separated (see §31 #10). The token is stored in `.env.local` and must never be committed.
 
 ## Version history sync
 
@@ -253,6 +253,8 @@ Do **not** implement these during the MVP:
 These can be considered after the MVP.
 
 **This scope is frozen for the MVP.** Adding to it requires updating this section first.
+
+**Scope change (2026-10-06):** multiple files with an explicit list (§31 #10) moved into the MVP. Automatic discovery of team files is still out of scope.
 
 ---
 
@@ -688,6 +690,8 @@ Contribution Engine
 
 ## Multiple files
 
+Partly moved into the MVP: an explicit file list is supported (§31 #10). What remains future work is discovering files automatically via `GET /v1/teams/:id/projects` (needs the `projects:read` scope; drafts aren't exposed).
+
 ```text
 File A ─┐
 File B ─┼→ Aggregation
@@ -1052,10 +1056,11 @@ These resolve gaps found while reviewing this document against `roadmap.md`. Whe
 |---|---|---|
 | 1 | Version history is paginated | `npm run sync` follows `pagination.next_page` until exhausted. Otherwise only the most recent page is counted. |
 | 2 | Autosaves vs named versions | Every entry returned by `/versions` (autosave or named) counts as 1 activity. The README states this. |
-| 3 | PAT scopes / expiry | Token needs the `file_versions:read` scope. PATs expire (max 90 days); a 401/403 error message says to regenerate. |
+| 3 | PAT scopes / expiry | Token needs the `file_versions:read` and `current_user:read` scopes. PATs expire (max 90 days); a 401/403 error message says to regenerate. |
 | 4 | §14 `year` field vs §17 multi-year | No top-level `year`. Storage holds all dates across all years; the UI picks the year. |
 | 5 | Where levels are computed (§10 vs §11) | **Storage holds counts only**: `{ "YYYY-MM-DD": count }` (matches roadmap Phase 5). Levels, streaks and stats are computed at read time by `lib/contributions`, so thresholds can change without re-syncing and storage stays swappable for SQLite. |
 | 6 | Real data in a public repo | `data/contributions.json` (real, from sync) is gitignored. A committed `data/demo.json` is the fallback the UI uses when no real data exists — that is what Vercel shows. |
 | 7 | Loading `.env.local` in the sync script | Use Node's built-in `--env-file-if-exists=.env.local` flag (`package.json` `sync` script), so a missing file reaches the script's friendly "missing token" message instead of a Node crash. No `dotenv` dependency. |
-| 8 | User filtering | MVP counts all versions in the file. Optional filter to the token owner (via `GET /v1/me`) is added in Phase 5 if it is reliable. |
+| 8 | User filtering | Sync counts only versions whose `user.id` matches the token owner (`GET /v1/me`). Required once files are shared, so teammates' versions aren't counted. |
 | 9 | Placeholder files | Files are created by the phase that needs them (roadmap §11: "Do not create every file immediately"). |
+| 10 | One file vs many | `FIGMA_FILE_KEYS` is a comma-separated list of keys or file URLs; sync fetches each file in turn and merges the user's versions. `FIGMA_FILE_KEY` is still accepted. Auto-discovery is future scope (§23). |

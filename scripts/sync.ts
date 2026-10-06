@@ -1,7 +1,9 @@
 // Run with `npm run sync`. Node loads .env.local via --env-file-if-exists; this script
 // is the only place the token is read, so it never reaches the Next.js client bundle.
 
-import { FigmaApiError } from "../src/lib/figma/client.ts";
+import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
+import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
+import type { FigmaVersion } from "../src/lib/figma/types.ts";
 import { fetchAllVersions } from "../src/lib/figma/versions.ts";
 
 function fail(message: string): never {
@@ -9,49 +11,62 @@ function fail(message: string): never {
   process.exit(1);
 }
 
+function errorMessage(error: unknown): string {
+  return error instanceof FigmaApiError ? error.message : `Unexpected error: ${error}`;
+}
+
 function loadConfig() {
   const token = process.env.FIGMA_ACCESS_TOKEN?.trim();
-  const rawFileKey = process.env.FIGMA_FILE_KEY?.trim();
+  // FIGMA_FILE_KEY (single file) still works for older .env.local files.
+  const rawFileKeys = (process.env.FIGMA_FILE_KEYS ?? process.env.FIGMA_FILE_KEY)?.trim();
 
   if (!token || token === "your_token_here") {
     fail("FIGMA_ACCESS_TOKEN is missing. Copy .env.example to .env.local and add your token.");
   }
-  if (!rawFileKey || rawFileKey === "your_file_key_here") {
-    fail("FIGMA_FILE_KEY is missing. Copy .env.example to .env.local and add your file key.");
+  if (!rawFileKeys || rawFileKeys.includes("your_file_key_here")) {
+    fail("FIGMA_FILE_KEYS is missing. Copy .env.example to .env.local and add your file keys or URLs.");
   }
 
-  // Accept a pasted file URL as well as a bare key.
-  // Branch URLs (.../<KEY>/<name>/branch/<BRANCH_KEY>/...) must use the branch key, not the main file's.
-  const url = rawFileKey.match(/figma\.com\/(?:file|design|proto|board)\/([A-Za-z0-9]+)(?:\/[^/?#]+\/branch\/([A-Za-z0-9]+))?/);
-  const fileKey = url ? (url[2] ?? url[1]) : rawFileKey;
-  if (!/^[A-Za-z0-9]+$/.test(fileKey)) {
-    fail(`FIGMA_FILE_KEY "${rawFileKey}" doesn't look like a Figma file key or file URL.`);
+  try {
+    return { token, fileKeys: parseFileKeys(rawFileKeys) };
+  } catch (error) {
+    fail(`FIGMA_FILE_KEYS: ${(error as Error).message}`);
   }
-
-  return { token, fileKey };
 }
 
 console.log("Figma Contributions Sync\n");
-const { token, fileKey } = loadConfig();
-console.log(`✓ Configuration loaded (file ${fileKey})`);
+const { token, fileKeys } = loadConfig();
+console.log(`✓ Configuration loaded (${fileKeys.length} file${fileKeys.length === 1 ? "" : "s"})`);
 
-console.log("\nConnecting to Figma and fetching version history...");
-let versions;
+let userId: string;
 try {
-  versions = await fetchAllVersions(fileKey, token);
+  userId = await fetchCurrentUserId(token);
 } catch (error) {
-  fail(error instanceof FigmaApiError ? error.message : `Unexpected error: ${error}`);
+  fail(errorMessage(error));
 }
 console.log("✓ Authentication successful");
-console.log("✓ File found");
-console.log("✓ Version history fetched");
 
-if (versions.length === 0) {
-  console.log("\nNo Figma activity found.");
+console.log("\nFetching version history (your versions / all versions)...");
+const mine: FigmaVersion[] = [];
+// ponytail: sequential to stay under Figma's rate limits; parallelize with a small pool if many files make sync slow.
+for (const fileKey of fileKeys) {
+  let versions: FigmaVersion[];
+  try {
+    versions = await fetchAllVersions(fileKey, token);
+  } catch (error) {
+    fail(`File ${fileKey}: ${errorMessage(error)}`);
+  }
+  const own = versions.filter((v) => v.user?.id === userId);
+  mine.push(...own);
+  console.log(`✓ ${fileKey}: ${own.length} / ${versions.length}`);
+}
+
+if (mine.length === 0) {
+  console.log("\nNo Figma activity by you found in these files.");
   process.exit(0);
 }
 
-const dates = versions.map((v) => v.created_at).sort();
-console.log(`\nTotal versions: ${versions.length}`);
+const dates = mine.map((v) => v.created_at).sort();
+console.log(`\nTotal versions by you: ${mine.length}`);
 console.log(`Oldest: ${dates[0]}`);
 console.log(`Newest: ${dates.at(-1)}`);

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { FigmaApiError, MAX_RETRIES } from "./client.ts";
+import { FigmaApiError, MAX_RETRIES, fetchCurrentUserId } from "./client.ts";
 import { fetchAllVersions } from "./versions.ts";
 
 const realFetch = globalThis.fetch;
@@ -67,4 +67,12 @@ test("gives up after MAX_RETRIES short rate-limit waits", async () => {
     (e: unknown) => e instanceof FigmaApiError && e.status === 429,
   );
   assert.equal(calls.length, 1 + MAX_RETRIES);
+});
+
+test("fetchCurrentUserId explains a missing current_user:read scope", async () => {
+  const me = "https://api.figma.com/v1/me";
+  stubFetch({ [me]: { body: { id: "u1" } } });
+  assert.equal(await fetchCurrentUserId("tok"), "u1");
+  stubFetch({ [me]: { status: 403, body: { status: 403, err: "Invalid scope" } } });
+  await assert.rejects(fetchCurrentUserId("tok"), /current_user:read/);
 });

@@ -1,6 +1,8 @@
 # Figma Contributions
 
-GitHub Contributions, but for Figma. A local-first, open-source app that turns a Figma file's version history into a GitHub-style contribution heatmap.
+GitHub Contributions, but for Figma. A local-first, open-source app that turns your Figma files' version history into a GitHub-style contribution heatmap.
+
+It can combine several files into one graph, and only counts versions you created.
 
 > Measures Figma **activity**, not productivity. 10 versions ≠ 10 hours of work.
 
@@ -18,7 +20,7 @@ The Figma API is only called by `npm run sync`, never on page render. Until Phas
 Requires Node.js 22.18 or newer (the sync script runs TypeScript natively).
 
 1. `npm install`
-2. `cp .env.example .env.local` and fill in `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEY` (see below)
+2. `cp .env.example .env.local` and fill in `FIGMA_ACCESS_TOKEN` and `FIGMA_FILE_KEYS` (see below)
 3. `npm run sync`
 4. `npm run dev`
 
@@ -28,21 +30,25 @@ Requires Node.js 22.18 or newer (the sync script runs TypeScript natively).
 
 1. In Figma, open **Settings → Security → Personal access tokens**.
 2. Click **Generate new token**.
-3. Give it the **`file_versions:read`** scope (read-only). Nothing else is needed.
+3. Give it two read-only scopes: **`file_versions:read`** (version history) and **`current_user:read`** (so sync only counts your versions, not teammates').
 4. Copy the token (starts with `figd_`). Figma only shows it once.
 
 Tokens expire (at most 90 days). If sync reports an authentication error, generate a new one.
 
-### `FIGMA_FILE_KEY`
+### `FIGMA_FILE_KEYS`
 
-The key is the part of the file URL after `/design/`:
+The files to count, separated by commas. Each one is a file key or a pasted file URL. The key is the part of the URL after `/design/`:
 
 ```text
 https://www.figma.com/design/AbC123xyz/My-File
                              ^^^^^^^^^
 ```
 
-Pasting the whole URL also works.
+```env
+FIGMA_FILE_KEYS=AbC123xyz, https://www.figma.com/design/DeF456/Other-File
+```
+
+Branch URLs count the branch's history. Add new files to this list yourself; sync doesn't discover them. An older `.env.local` with a single `FIGMA_FILE_KEY` still works.
 
 ### How the variables are used
 

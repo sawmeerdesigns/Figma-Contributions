@@ -3,6 +3,12 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Heatmap levels 0–4 (lib/contributions getLevel) */
+  --level-0: #ebedf0;
+  --level-1: #ddd0ff;
+  --level-2: #b794ff;
+  --level-3: #8b5cf6;
+  --level-4: #5b21b6;
 }
 
 @theme inline {
@@ -16,6 +22,11 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --level-0: #1f1f23;
+    --level-1: #3b2470;
+    --level-2: #5b34b0;
+    --level-3: #8b5cf6;
+    --level-4: #c4b5fd;
   }
 }
 

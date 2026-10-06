@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–7 complete · Next: Phase 8 (heatmap UI)  
+**Status:** Phases 1–8 complete · Next: Phase 9 (statistics dashboard)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -965,6 +965,8 @@ More
 
 Do not start statistics until the heatmap correctly represents test data.
 
+- [x] `src/components/contribution/ContributionGraph.tsx` + `src/app/page.tsx`, checked in the browser 2026-10-06: real data (235 in 2026) and demo data (`data/demo.json`, used when `data/contributions.json` is missing) both render; tooltip counts match the JSON; one tab stop with arrow-key navigation; graph scrolls inside its box at 390px with no page scroll; year switcher (`?year=`); empty state; no console errors. The sub-components (MonthLabels, Cell, Tooltip, Legend) live in the one file until they need their own.
+
 ---
 
 # PHASE 9 — Statistics Dashboard
@@ -1452,7 +1454,7 @@ Every phase produces something usable.
 [x] PHASE 5 — Raw Data Processing
 [x] PHASE 6 — Contribution Engine
 [x] PHASE 7 — Calendar Engine
-[ ] PHASE 8 — Heatmap UI
+[x] PHASE 8 — Heatmap UI
 [ ] PHASE 9 — Statistics Dashboard
 [ ] PHASE 10 — Year Navigation
 [ ] PHASE 11 — Multi-File Support

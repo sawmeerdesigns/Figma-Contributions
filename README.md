@@ -11,7 +11,7 @@ npm run sync  →  Figma REST API (GET /v1/files/:key/versions)  →  data/contr
 npm run dev   →  data/contributions.json  →  heatmap + stats
 ```
 
-The Figma API is only called by `npm run sync`, never on page render.
+The Figma API is only called by `npm run sync`, never on page render. Until Phase 5, `npm run sync` only fetches version history and prints a summary; it does not write `data/contributions.json` yet.
 
 ## Setup
 

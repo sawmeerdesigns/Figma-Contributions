@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { FigmaApiError } from "./client.ts";
+import { FigmaApiError, MAX_RETRIES } from "./client.ts";
 import { fetchAllVersions } from "./versions.ts";
 
 const realFetch = globalThis.fetch;
@@ -8,14 +8,14 @@ afterEach(() => {
   globalThis.fetch = realFetch;
 });
 
-function stubFetch(pages: Record<string, { status?: number; body: unknown }>) {
+function stubFetch(pages: Record<string, { status?: number; headers?: HeadersInit; body: unknown }>) {
   const calls: { url: string; token: string | null }[] = [];
   globalThis.fetch = (async (input: string | URL, init?: RequestInit) => {
     const url = String(input);
     calls.push({ url, token: new Headers(init?.headers).get("X-Figma-Token") });
     const page = pages[url];
     if (!page) throw new Error(`unexpected request: ${url}`);
-    return new Response(JSON.stringify(page.body), { status: page.status ?? 200 });
+    return new Response(JSON.stringify(page.body), { status: page.status ?? 200, headers: page.headers });
   }) as typeof fetch;
   return calls;
 }
@@ -58,4 +58,13 @@ test("explains auth, missing-file and rate-limit errors", async () => {
       (e: unknown) => e instanceof FigmaApiError && e.status === status && pattern.test(e.message),
     );
   }
+});
+
+test("gives up after MAX_RETRIES short rate-limit waits", async () => {
+  const calls = stubFetch({ [first]: { status: 429, headers: { "retry-after": "0.001" }, body: {} } });
+  await assert.rejects(
+    fetchAllVersions("KEY", "tok"),
+    (e: unknown) => e instanceof FigmaApiError && e.status === 429,
+  );
+  assert.equal(calls.length, 1 + MAX_RETRIES);
 });

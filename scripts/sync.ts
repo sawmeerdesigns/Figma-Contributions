@@ -21,7 +21,9 @@ function loadConfig() {
   }
 
   // Accept a pasted file URL as well as a bare key.
-  const fileKey = rawFileKey.match(/figma\.com\/(?:file|design|proto|board)\/([A-Za-z0-9]+)/)?.[1] ?? rawFileKey;
+  // Branch URLs (.../<KEY>/<name>/branch/<BRANCH_KEY>/...) must use the branch key, not the main file's.
+  const url = rawFileKey.match(/figma\.com\/(?:file|design|proto|board)\/([A-Za-z0-9]+)(?:\/[^/?#]+\/branch\/([A-Za-z0-9]+))?/);
+  const fileKey = url ? (url[2] ?? url[1]) : rawFileKey;
   if (!/^[A-Za-z0-9]+$/.test(fileKey)) {
     fail(`FIGMA_FILE_KEY "${rawFileKey}" doesn't look like a Figma file key or file URL.`);
   }

@@ -252,6 +252,8 @@ Do **not** implement these during the MVP:
 
 These can be considered after the MVP.
 
+**This scope is frozen for the MVP.** Adding to it requires updating this section first.
+
 ---
 
 # 9. Technical Stack
@@ -390,7 +392,7 @@ figma-contributions/
 └── tsconfig.json
 ```
 
-This is the intended architecture. Phase 2 creates the actual project.
+This is the intended architecture. Files are created by the phase that needs them (§31 #9), so the real tree (`git ls-files`) is a subset of this plus tooling files (`next.config.ts`, `eslint.config.mjs`, `postcss.config.mjs`, `package-lock.json`) and tests next to the code they cover (e.g. `src/lib/figma/versions.test.ts`).
 
 ---
 
@@ -402,8 +404,8 @@ This is the intended architecture. Phase 2 creates the actual project.
 type FigmaVersion = {
   id: string;
   created_at: string;
-  label?: string;
-  description?: string;
+  label?: string | null;
+  description?: string | null;
   user?: {
     id: string;
     handle: string;
@@ -461,7 +463,7 @@ Target structure:
 }
 ```
 
-The schema may be refined during implementation.
+The schema may be refined during implementation. **Superseded by §31 #4–#5:** no top-level `year`, and storage holds counts only (`{ "YYYY-MM-DD": count }`); levels are computed at read time.
 
 ---
 
@@ -870,56 +872,56 @@ Record future features without implementing them.
 
 ## Product
 
-- [ ] Problem statement approved
-- [ ] Project vision approved
-- [ ] Target users defined
-- [ ] MVP scope approved
-- [ ] Non-goals documented
-- [ ] Activity ≠ productivity principle documented
+- [x] Problem statement approved
+- [x] Project vision approved
+- [x] Target users defined
+- [x] MVP scope approved
+- [x] Non-goals documented
+- [x] Activity ≠ productivity principle documented
 
 ## Architecture
 
-- [ ] Local-first architecture approved
-- [ ] Figma REST API selected
-- [ ] Next.js selected
-- [ ] TypeScript selected
-- [ ] Tailwind selected
-- [ ] JSON selected for MVP
-- [ ] Vercel deployment strategy defined
+- [x] Local-first architecture approved
+- [x] Figma REST API selected
+- [x] Next.js selected
+- [x] TypeScript selected
+- [x] Tailwind selected
+- [x] JSON selected for MVP
+- [x] Vercel deployment strategy defined
 
 ## Data
 
-- [ ] FigmaVersion model defined
-- [ ] Activity model defined
-- [ ] ContributionDay model defined
-- [ ] Contribution JSON structure defined
-- [ ] Daily aggregation logic defined
-- [ ] Contribution intensity levels defined
-- [ ] Timezone policy defined
+- [x] FigmaVersion model defined
+- [x] Activity model defined
+- [x] ContributionDay model defined
+- [x] Contribution JSON structure defined
+- [x] Daily aggregation logic defined
+- [x] Contribution intensity levels defined
+- [x] Timezone policy defined
 
 ## Security
 
-- [ ] PAT strategy defined
-- [ ] `.env.local` strategy defined
-- [ ] `.gitignore` requirements defined
-- [ ] Public token exposure prohibited
-- [ ] Public demo-data strategy defined
+- [x] PAT strategy defined
+- [x] `.env.local` strategy defined
+- [x] `.gitignore` requirements defined
+- [x] Public token exposure prohibited
+- [x] Public demo-data strategy defined
 
 ## Repository
 
-- [ ] Repository name selected
-- [ ] Folder architecture defined
-- [ ] Sync script location defined
-- [ ] Figma client location defined
-- [ ] Contribution engine location defined
-- [ ] UI component structure defined
+- [x] Repository name selected
+- [x] Folder architecture defined
+- [x] Sync script location defined
+- [x] Figma client location defined
+- [x] Contribution engine location defined
+- [x] UI component structure defined
 
 ## Process
 
-- [ ] Phase 1 document completed
-- [ ] Architecture reviewed
-- [ ] MVP scope frozen
-- [ ] No Phase 2 implementation started prematurely
+- [x] Phase 1 document completed
+- [x] Architecture reviewed
+- [x] MVP scope frozen
+- [x] No Phase 2 implementation started prematurely
 
 ---
 
@@ -1026,11 +1028,9 @@ If any answer is unclear:
 
 **Status:** ✅ Complete (2026-10-06)
 
-**Implementation:** Not started (correct for Phase 1)
+**Gate:** ✅ Passed. All §28 checklist items are complete.
 
-**Next:** Phase 2 — GitHub Repository & Next.js Foundation
-
-**Gate:** 🔒 Locked until all Phase 1 checklist items are completed.
+**Implementation:** In progress. Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) built, awaiting verification with a real token. See `roadmap.md` §17.
 
 ---
 
@@ -1056,6 +1056,6 @@ These resolve gaps found while reviewing this document against `roadmap.md`. Whe
 | 4 | §14 `year` field vs §17 multi-year | No top-level `year`. Storage holds all dates across all years; the UI picks the year. |
 | 5 | Where levels are computed (§10 vs §11) | **Storage holds counts only**: `{ "YYYY-MM-DD": count }` (matches roadmap Phase 5). Levels, streaks and stats are computed at read time by `lib/contributions`, so thresholds can change without re-syncing and storage stays swappable for SQLite. |
 | 6 | Real data in a public repo | `data/contributions.json` (real, from sync) is gitignored. A committed `data/demo.json` is the fallback the UI uses when no real data exists — that is what Vercel shows. |
-| 7 | Loading `.env.local` in the sync script | Use Node's built-in `--env-file=.env.local` flag. No `dotenv` dependency. |
+| 7 | Loading `.env.local` in the sync script | Use Node's built-in `--env-file-if-exists=.env.local` flag (`package.json` `sync` script), so a missing file reaches the script's friendly "missing token" message instead of a Node crash. No `dotenv` dependency. |
 | 8 | User filtering | MVP counts all versions in the file. Optional filter to the token owner (via `GET /v1/me`) is added in Phase 5 if it is reliable. |
 | 9 | Placeholder files | Files are created by the phase that needs them (roadmap §11: "Do not create every file immediately"). |

@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Planning / Phase 1  
+**Status:** Phases 1–3 complete · Phase 4 (Figma API client) built, awaiting real-token verification  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -581,6 +581,8 @@ You should be able to explain:
 
 Do not start Phase 2 until all Phase 1 questions are answered and the architecture is documented.
 
+- [x] All questions answered and architecture documented in `docs/phase-1.md` (gate passed)
+
 ---
 
 # PHASE 2 — GitHub Repository & Next.js Foundation
@@ -649,11 +651,11 @@ git push
 
 ### Completion criteria
 
-- Repository exists
-- Application runs
-- Git history exists
-- No secrets committed
-- README exists
+- [x] Repository exists
+- [x] Application runs
+- [x] Git history exists
+- [x] No secrets committed
+- [x] README exists
 
 ### 🚨 Gate
 
@@ -693,7 +695,7 @@ Configuration documentation explaining:
 
 ### Completion criteria
 
-Application can read configuration without exposing credentials to the client.
+- [x] Application can read configuration without exposing credentials to the client (only `scripts/sync.ts` reads `.env.local`, via `--env-file-if-exists`; `.env*.local` is gitignored)
 
 ### 🚨 Gate
 
@@ -743,13 +745,18 @@ npm run sync
 and see:
 
 ```text
-Connecting to Figma...
+Figma Contributions Sync
 
-Authentication successful.
+✓ Configuration loaded (file <FILE_KEY>)
 
-File found.
+Connecting to Figma and fetching version history...
+✓ Authentication successful
+✓ File found
+✓ Version history fetched
 
-Fetching version history...
+Total versions: <n>
+Oldest: <timestamp>
+Newest: <timestamp>
 ```
 
 ### 🚨 Gate
@@ -761,6 +768,9 @@ Do not build statistics.
 Do not build UI analytics.
 
 Until this phase can reliably retrieve real Figma data.
+
+- [x] Client, paginated version retrieval and error handling built (`npm test` covers pagination, the token host check, and auth/404/429 errors)
+- [ ] `npm run sync` verified against a real Figma file with a real token
 
 ---
 

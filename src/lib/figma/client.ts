@@ -1,6 +1,7 @@
 const FIGMA_API_HOST = "api.figma.com";
 // Rate-limit waits longer than this are reported instead of waited out.
 const MAX_RETRY_WAIT_SECONDS = 60;
+export const MAX_RETRIES = 3;
 
 export class FigmaApiError extends Error {
   status: number;
@@ -29,10 +30,10 @@ export async function figmaGet<T>(url: string, token: string): Promise<T> {
     throw new FigmaApiError(0, `Refusing to send the Figma token to ${protocol}//${hostname}.`);
   }
 
-  for (;;) {
+  for (let attempt = 0; ; attempt++) {
     let res: Response;
     try {
-      res = await fetch(url, { headers: { "X-Figma-Token": token } });
+      res = await fetch(url, { headers: { "X-Figma-Token": token }, signal: AbortSignal.timeout(30_000) });
     } catch {
       throw new FigmaApiError(0, "Could not reach the Figma API. Check your internet connection.");
     }
@@ -41,7 +42,7 @@ export async function figmaGet<T>(url: string, token: string): Promise<T> {
 
     if (res.status === 429) {
       const wait = Number(res.headers.get("retry-after")) || 0;
-      if (wait > 0 && wait <= MAX_RETRY_WAIT_SECONDS) {
+      if (wait > 0 && wait <= MAX_RETRY_WAIT_SECONDS && attempt < MAX_RETRIES) {
         await new Promise((resolve) => setTimeout(resolve, wait * 1000));
         continue;
       }

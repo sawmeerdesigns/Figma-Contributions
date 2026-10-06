@@ -33,6 +33,14 @@ test("follows pagination and sends the token", async () => {
   assert.deepEqual(calls.map((c) => c.token), ["tok", "tok"]);
 });
 
+test("drops versions repeated across pages", async () => {
+  stubFetch({
+    [first]: { body: { versions: [{ id: "3" }, { id: "2" }], pagination: { next_page: second } } },
+    [second]: { body: { versions: [{ id: "2" }, { id: "1" }], pagination: {} } },
+  });
+  assert.deepEqual((await fetchAllVersions("KEY", "tok")).map((v) => v.id), ["3", "2", "1"]);
+});
+
 test("stops if Figma repeats a page URL", async () => {
   stubFetch({ [first]: { body: { versions: [{ id: "1" }], pagination: { next_page: first } } } });
   assert.equal((await fetchAllVersions("KEY", "tok")).length, 1);

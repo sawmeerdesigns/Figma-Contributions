@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–4 complete · Next: Phase 5 (raw data processing)  
+**Status:** Phases 1–5 complete · Next: Phase 6 (contribution engine)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -816,6 +816,8 @@ npm run sync
 
 generates valid local data.
 
+- [x] `npm run sync` writes `data/contributions.json` (`src/lib/contributions/normalize.ts`; `npm test` covers UTC day boundaries, malformed timestamps and duplicate versions across pages). Verified 2026-10-06: 235 versions over 42 active days from 2 files.
+
 ### 🚨 Gate
 
 Do not start the UI until the data pipeline produces correct results.
@@ -1443,7 +1445,7 @@ Every phase produces something usable.
 [x] PHASE 2 — GitHub Repository & Next.js
 [x] PHASE 3 — Environment & Figma Configuration
 [x] PHASE 4 — Figma API Client
-[ ] PHASE 5 — Raw Data Processing
+[x] PHASE 5 — Raw Data Processing
 [ ] PHASE 6 — Contribution Engine
 [ ] PHASE 7 — Calendar Engine
 [ ] PHASE 8 — Heatmap UI

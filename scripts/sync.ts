@@ -1,6 +1,9 @@
 // Run with `npm run sync`. Node loads .env.local via --env-file-if-exists; this script
 // is the only place the token is read, so it never reaches the Next.js client bundle.
 
+import { mkdir, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { countByDay } from "../src/lib/contributions/normalize.ts";
 import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
 import type { FigmaVersion } from "../src/lib/figma/types.ts";
@@ -61,12 +64,28 @@ for (const fileKey of fileKeys) {
   console.log(`✓ ${fileKey}: ${own.length} / ${versions.length}`);
 }
 
-if (mine.length === 0) {
-  console.log("\nNo Figma activity by you found in these files.");
-  process.exit(0);
-}
+const counts = countByDay(mine);
+const days = Object.keys(counts);
+const counted = Object.values(counts).reduce((sum, n) => sum + n, 0);
+console.log("✓ Activity processed");
 
-const dates = mine.map((v) => v.created_at).sort();
-console.log(`\nTotal versions by you: ${mine.length}`);
-console.log(`Oldest: ${dates[0]}`);
-console.log(`Newest: ${dates.at(-1)}`);
+const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
+try {
+  await mkdir(fileURLToPath(new URL("../data/", import.meta.url)), { recursive: true });
+  await writeFile(outFile, `${JSON.stringify(counts, null, 2)}\n`);
+} catch (error) {
+  fail(`Could not write ${outFile}: ${(error as Error).message}`);
+}
+console.log("✓ Contributions generated");
+
+console.log(`\nTotal versions by you: ${counted}`);
+if (counted < mine.length) console.log(`Skipped (bad timestamp): ${mine.length - counted}`);
+console.log(`Active days: ${days.length}`);
+if (days.length > 0) {
+  console.log(`First active day: ${days[0]}`);
+  console.log(`Last active day: ${days.at(-1)}`);
+} else {
+  // Still written (as {}), so an old file from a previous sync doesn't linger.
+  console.log("No Figma activity by you found in these files.");
+}
+console.log("\nData written to:\ndata/contributions.json");

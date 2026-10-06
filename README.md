@@ -13,7 +13,7 @@ npm run sync  →  Figma REST API (GET /v1/files/:key/versions)  →  data/contr
 npm run dev   →  data/contributions.json  →  heatmap + stats
 ```
 
-The Figma API is only called by `npm run sync`, never on page render. Until Phase 5, `npm run sync` only fetches version history and prints a summary; it does not write `data/contributions.json` yet.
+The Figma API is only called by `npm run sync`, never on page render. Sync writes `data/contributions.json` as `{ "YYYY-MM-DD": count }` (UTC dates, only your versions). The file is gitignored, and every sync rewrites it.
 
 ## Setup
 
@@ -74,4 +74,4 @@ Branch URLs count the branch's history. Add new files to this list yourself; syn
 
 ## Status
 
-See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Next: Phase 5 (raw data processing). Decisions: [docs/phase-1.md §31](docs/phase-1.md).
+See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Next: Phase 6 (contribution engine). Decisions: [docs/phase-1.md §31](docs/phase-1.md).

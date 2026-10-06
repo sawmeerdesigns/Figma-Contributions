@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–16 complete · Next: Phase 17 (documentation)  
+**Status:** Phases 1–17 complete · Next: Phase 18 (open source readiness)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1265,6 +1265,8 @@ The README should explain:
 15. Contributing
 16. License
 
+- [x] Done 2026-10-07: README rewritten with all 16 sections. Screenshots (`docs/screenshots/dark.png`, `light.png`) use the demo data, never real files; the README picks the one matching the reader's theme. Troubleshooting covers every error message sync and the app can print. License: MIT (chosen 2026-10-07; the LICENSE file is Phase 18). The README's old phase-by-phase status line was removed; this roadmap is the status.
+
 ---
 
 # PHASE 18 — Open Source Readiness
@@ -1491,7 +1493,7 @@ Every phase produces something usable.
 [x] PHASE 14 — Accessibility
 [x] PHASE 15 — Testing & Reliability
 [x] PHASE 16 — Sync Optimization
-[ ] PHASE 17 — Documentation
+[x] PHASE 17 — Documentation
 [ ] PHASE 18 — Open Source Readiness
 [ ] PHASE 19 — Public Demo
 [ ] PHASE 20 — Version 1.0 Release

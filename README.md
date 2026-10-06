@@ -212,8 +212,8 @@ Thresholds live in `getLevel` (`src/lib/contributions/calculate.ts`). They're ap
 
 ## Contributing
 
-Issues and pull requests are welcome. Before opening a PR, run `npm test`, `npm run typecheck`, `npm run lint` and `npm run build`; CI runs the same checks. The [roadmap](docs/roadmap.md) shows what's planned, and [phase-1 §31](docs/phase-1.md#31-phase-1-decisions-resolved-gaps) records past decisions and why. Full contribution guidelines come with roadmap Phase 18.
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for local setup, testing, branch and commit conventions, and how to propose features. Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md). Report security problems privately as described in [SECURITY.md](SECURITY.md). Changes are listed in the [changelog](CHANGELOG.md).
 
 ## License
 
-[MIT](LICENSE). The LICENSE file itself is added with roadmap Phase 18 (open-source readiness).
+[MIT](LICENSE) © 2026 sawmeerdesigns

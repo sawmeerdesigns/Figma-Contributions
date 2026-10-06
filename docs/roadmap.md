@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–17 complete · Next: Phase 18 (open source readiness)  
+**Status:** Phases 1–18 complete · Next: Phase 19 (public demo)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1290,6 +1290,8 @@ Document:
 - Testing
 - Feature proposals
 
+- [x] Done 2026-10-07: `LICENSE` (MIT, © sawmeerdesigns), `CONTRIBUTING.md` (feature proposals, local development, testing, branch / commit / PR conventions), `CODE_OF_CONDUCT.md` (adopts Contributor Covenant 2.1), `SECURITY.md` (private reports to sawmeerdesigns@gmail.com, scope centred on the token and activity data), `CHANGELOG.md` (Keep a Changelog, everything under Unreleased until 0.1.0). Also: PR template and bug / feature-proposal issue templates in `.github/`, `license` + `repository` in `package.json`.
+
 ---
 
 # PHASE 19 — Public Demo
@@ -1494,7 +1496,7 @@ Every phase produces something usable.
 [x] PHASE 15 — Testing & Reliability
 [x] PHASE 16 — Sync Optimization
 [x] PHASE 17 — Documentation
-[ ] PHASE 18 — Open Source Readiness
+[x] PHASE 18 — Open Source Readiness
 [ ] PHASE 19 — Public Demo
 [ ] PHASE 20 — Version 1.0 Release
 ```

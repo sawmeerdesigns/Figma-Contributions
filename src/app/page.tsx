@@ -6,6 +6,7 @@ import { StatsGrid } from "@/components/stats/StatsGrid";
 import { calculateStats } from "@/lib/contributions/calculate";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
 import type { DailyCounts } from "@/lib/contributions/normalize";
+import { resolveYear } from "@/lib/contributions/years";
 import demo from "../../data/demo.json";
 
 // Real data from `npm run sync` (gitignored). Without it, show committed demo data (phase-1 §31 #6).
@@ -21,9 +22,7 @@ async function loadCounts(): Promise<{ counts: DailyCounts; isDemo: boolean }> {
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   const { counts, isDemo } = await loadCounts();
-  const years = [...new Set(Object.keys(counts).map((date) => Number(date.slice(0, 4))))].sort((a, b) => b - a);
-  const requested = Number((await searchParams).year);
-  const year = years.includes(requested) ? requested : (years[0] ?? new Date().getUTCFullYear());
+  const { year, years } = resolveYear(counts, (await searchParams).year, new Date().getUTCFullYear());
 
   const calendar = buildYearCalendar(counts, year);
   const stats = calculateStats(Object.fromEntries(Object.entries(counts).filter(([date]) => date.startsWith(`${year}-`))));
@@ -64,7 +63,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           )}
         </div>
 
-        <ContributionGraph {...calendar} year={year} />
+        {/* key: reset keyboard focus when the year changes */}
+        <ContributionGraph key={year} {...calendar} year={year} />
 
         <div className="flex flex-wrap items-center justify-between gap-2">
           {total === 0 ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { Level } from "@/lib/contributions/calculate";
 import type { ContributionDay, YearCalendar } from "@/lib/contributions/calendar";
 
@@ -51,6 +51,13 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
   const [focus, setFocus] = useState<[number, number]>([0, firstDay]);
   const [tip, setTip] = useState<{ text: string; x: number; y: number } | null>(null);
 
+  // When the graph is narrower than the year (phones), start scrolled to today's week, like GitHub.
+  useEffect(() => {
+    const box = tableRef.current?.parentElement;
+    const today = tableRef.current?.querySelector(`[data-date="${new Date().toISOString().slice(0, 10)}"]`);
+    if (box && today) box.scrollLeft += today.getBoundingClientRect().right - box.getBoundingClientRect().right + 24;
+  }, []);
+
   const show = (day: ContributionDay, el: HTMLElement) => {
     const r = el.getBoundingClientRect();
     setTip({ text: describeDay(day), x: r.left + r.width / 2, y: r.top });
@@ -81,7 +88,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
       >
         <thead>
           <tr>
-            <td />
+            <td className="sticky left-0 bg-background" />
             {spans[0].week > 0 && <td colSpan={spans[0].week} />}
             {spans.map((m) => (
               <th key={m.month} colSpan={m.span} scope="colgroup" className="text-left font-normal">
@@ -93,7 +100,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
         <tbody>
           {ROW_LABELS.map((label, r) => (
             <tr key={r}>
-              <td className="pr-1 leading-none" aria-hidden>
+              <td className="sticky left-0 bg-background pr-1 leading-none" aria-hidden>
                 {label}
               </td>
               {weeks.map((week, w) => {
@@ -105,6 +112,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
                     key={w}
                     role="gridcell"
                     data-pos={`${w}-${r}`}
+                    data-date={day.date}
                     tabIndex={active ? 0 : -1}
                     aria-label={describeDay(day)}
                     onMouseEnter={(e) => show(day, e.currentTarget)}

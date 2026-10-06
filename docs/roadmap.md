@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–9 complete · Next: Phase 10 (year navigation)  
+**Status:** Phases 1–11 complete (Phase 11 multi-file was pulled forward: `FIGMA_FILE_KEYS`, phase-1 §31 #10)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1032,6 +1032,8 @@ Test:
 - Previous year
 - Leap year
 
+- [x] `src/lib/contributions/years.ts` (`resolveYear`) passes `npm test` for all four cases, plus invalid, future and pre-2016 years. Checked in the browser 2026-10-06: `/` → 2026 (current), `?year=2025` → empty year with empty state, `?year=2024` → 366 days incl. Feb 29, `?year=2027`/`abc` → fall back to 2026. Switching years resets keyboard focus; on narrow screens the current year opens scrolled to today with the weekday labels pinned. Years offered: earliest synced year (or the opened year) through the current year, gaps included; future years are not offered.
+
 ---
 
 # PHASE 11 — Multi-File Support
@@ -1068,6 +1070,8 @@ File C ──┘
 ### 🚨 Gate
 
 Do not start project analytics until multiple files aggregate correctly without duplicate counting.
+
+- [x] Built ahead of schedule as `FIGMA_FILE_KEYS` (comma-separated keys/URLs, phase-1 §31 #10) rather than the JSON config above, with only the token owner's versions counted. No double counting: the same file listed twice (key + URL) is deduped (`fileKeys.test.ts`), versions repeated across pages are dropped (`versions.test.ts`). Verified 2026-10-06 on 2 real files: 67 + 168 = 235. File names aren't stored yet; Phase 12 needs them.
 
 ---
 
@@ -1458,8 +1462,8 @@ Every phase produces something usable.
 [x] PHASE 7 — Calendar Engine
 [x] PHASE 8 — Heatmap UI
 [x] PHASE 9 — Statistics Dashboard
-[ ] PHASE 10 — Year Navigation
-[ ] PHASE 11 — Multi-File Support
+[x] PHASE 10 — Year Navigation
+[x] PHASE 11 — Multi-File Support
 [ ] PHASE 12 — Project Analytics
 [ ] PHASE 13 — UX & Visual Polish
 [ ] PHASE 14 — Accessibility

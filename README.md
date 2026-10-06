@@ -13,7 +13,7 @@ npm run sync  →  Figma REST API (GET /v1/files/:key/versions)  →  data/contr
 npm run dev   →  data/contributions.json  →  heatmap + stats
 ```
 
-The Figma API is only called by `npm run sync`, never on page render. Sync writes `data/contributions.json` as `{ "YYYY-MM-DD": count }` (UTC dates, only your versions). The file is gitignored, and every sync rewrites it. Without it, the page shows the committed, made-up `data/demo.json` (that's what a public deploy shows). Pick a year with `/?year=2025`.
+The Figma API is only called by `npm run sync`, never on page render. Sync writes `data/contributions.json` as `{ "YYYY-MM-DD": count }` (UTC dates, only your versions). The file is gitignored, and every sync rewrites it. Without it, the page shows the committed, made-up `data/demo.json` (that's what a public deploy shows). Pick a year with the year switcher or `/?year=2025`. Any year from your first synced year up to now can be opened, including empty ones.
 
 ## Setup
 
@@ -74,4 +74,4 @@ Branch URLs count the branch's history. Add new files to this list yourself; syn
 
 ## Status
 
-See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Next: Phase 10 (year navigation). Decisions: [docs/phase-1.md §31](docs/phase-1.md).
+See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Phase 10 (year navigation) ✅ · Phase 11 (multi-file) ✅ via `FIGMA_FILE_KEYS`. See the roadmap for what's next. Decisions: [docs/phase-1.md §31](docs/phase-1.md).

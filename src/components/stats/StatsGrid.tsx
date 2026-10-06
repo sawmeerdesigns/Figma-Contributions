@@ -23,6 +23,7 @@ export function StatsGrid({ stats, currentStreak, year }: { stats: ContributionS
   const { mostActiveDay, mostActiveMonth } = stats;
   return (
     <div className="@container">
+      <h2 className="sr-only">Statistics for {year}</h2>
       <dl aria-label={`Statistics for ${year}`} className="grid grid-cols-2 gap-3 @lg:grid-cols-3">
         <StatCard value={stats.total} label="Contributions" detail={`in ${year}`} />
         <StatCard value={stats.activeDays} label="Active days" detail={`in ${year}`} />

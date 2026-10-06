@@ -31,7 +31,7 @@ export function describeDay({ date, count }: ContributionDay) {
 function Cell({ level }: { level: Level }) {
   return (
     <span
-      className="block size-[11px] rounded-[3px] group-hover:scale-125 motion-safe:transition-transform motion-safe:duration-100"
+      className="block size-[11px] rounded-[3px] forced-color-adjust-none group-hover:scale-125 motion-safe:transition-transform motion-safe:duration-100"
       style={{ background: `var(--level-${level})` }}
     />
   );
@@ -55,6 +55,12 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
   const firstDay = weeks[0].findIndex(Boolean);
   const [focus, setFocus] = useState<[number, number]>([0, firstDay]);
   const [tip, setTip] = useState<{ text: string; x: number; y: number } | null>(null);
+  // WCAG 1.4.13: the tooltip is hoverable (a short delay lets the pointer reach it) and Escape dismisses it.
+  const hideTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const hideSoon = () => {
+    hideTimer.current = setTimeout(() => setTip(null), 150);
+  };
+  const keepTip = () => clearTimeout(hideTimer.current);
 
   // When the graph is narrower than the year (phones), start scrolled to today's week, like GitHub.
   useEffect(() => {
@@ -64,15 +70,29 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
   }, []);
 
   const show = (day: ContributionDay, el: HTMLElement) => {
+    keepTip();
     const r = el.getBoundingClientRect();
     setTip({ text: describeDay(day), x: r.left + r.width / 2, y: r.top });
   };
 
+  // ARIA grid keys: arrows move a day/week; Home/End go to the row's first/last day, with Ctrl to the year's.
+  const target = (key: string, ctrl: boolean): [number, number] | null => {
+    const [w, r] = focus;
+    if (ARROWS[key]) return [w + ARROWS[key][0], r + ARROWS[key][1]];
+    if (key !== "Home" && key !== "End") return null;
+    const days = ctrl
+      ? weeks.flatMap((week, wi) => week.map((d, ri) => (d ? [wi, ri] : null)))
+      : weeks.map((week, wi) => (week[r] ? [wi, r] : null));
+    const valid = days.filter((p): p is [number, number] => p !== null);
+    return (key === "Home" ? valid[0] : valid.at(-1)) ?? null;
+  };
+
   const onKeyDown = (e: KeyboardEvent) => {
-    const move = ARROWS[e.key];
-    if (!move) return;
+    if (e.key === "Escape") return setTip(null);
+    const next = target(e.key, e.ctrlKey || e.metaKey);
+    if (!next) return;
     e.preventDefault();
-    const [w, r] = [focus[0] + move[0], focus[1] + move[1]];
+    const [w, r] = next;
     if (!weeks[w]?.[r]) return; // padding slot or outside the grid
     setFocus([w, r]);
     tableRef.current?.querySelector<HTMLElement>(`[data-pos="${w}-${r}"]`)?.focus();
@@ -121,7 +141,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
                     tabIndex={active ? 0 : -1}
                     aria-label={describeDay(day)}
                     onMouseEnter={(e) => show(day, e.currentTarget)}
-                    onMouseLeave={() => setTip(null)}
+                    onMouseLeave={hideSoon}
                     onFocus={(e) => {
                       setFocus([w, r]);
                       show(day, e.currentTarget);
@@ -140,7 +160,9 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
       {tip && (
         <div
           aria-hidden
-          className="pointer-events-none fixed z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-lg"
+          onMouseEnter={keepTip}
+          onMouseLeave={hideSoon}
+          className="fixed z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-lg"
           style={{ left: tip.x, top: tip.y - 6 }}
         >
           {tip.text}

@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
                     key={y}
                     href={`/?year=${y}`}
                     aria-current={y === year ? "page" : undefined}
-                    className="rounded-md px-2 py-0.5 text-muted tabular-nums transition-colors hover:bg-line hover:text-foreground aria-[current=page]:bg-brand aria-[current=page]:text-white"
+                    className="rounded-md px-2.5 py-1 text-muted tabular-nums transition-colors hover:bg-line hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand aria-[current=page]:bg-brand aria-[current=page]:text-white"
                   >
                     {y}
                   </Link>

@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–13 complete · Next: Phase 14 (accessibility)  
+**Status:** Phases 1–14 complete · Next: Phase 15 (testing & reliability)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1155,6 +1155,15 @@ Example:
 October 5, 2026 — 7 contributions
 ```
 
+- [x] Checked 2026-10-06 (WCAG 2.2 AA as the target):
+  - **Keyboard:** one tab stop for the grid; arrows, Home/End (row), Ctrl/Cmd+Home/End (year); Escape hides the tooltip; focus resets on year change. Tab order 2026 → 2025 → grid (no positive tabindex).
+  - **Focus states:** brand-colour `focus-visible` ring on cells, year links and the Try again button (3.56:1 dark, 5.03:1 light against the card).
+  - **Screen readers:** each cell's name is "<n> versions on <weekday>, <date>"; landmarks `main`/`banner`/`navigation "Year"`; headings for the graph, statistics (visually hidden) and projects; status/alert roles on the demo banner, loading and error.
+  - **Colour contrast:** all text ≥ 4.5:1 in both themes, enforced by `src/app/contrast.test.ts`. Heatmap levels 0–1 are below 3:1 against the card; accepted because every count is also given as text (cell name, tooltip, stats).
+  - **Tooltip (WCAG 1.4.13):** shown on hover and focus, hoverable, dismissable with Escape.
+  - **Reduced motion:** cell scale and skeleton pulse are `motion-safe`. **Forced colours:** cells keep their colours (`forced-color-adjust: none`).
+  - **Mobile:** tapping a cell focuses it and shows the tooltip; layout holds at 320px. Known limit: cells are 11px, under the 24px target size (WCAG 2.5.8); the same data is reachable in the stats and by keyboard. Not tested with a real screen reader (VoiceOver/NVDA) or real Tab presses: the automation tool can't send them.
+
 ---
 
 # PHASE 15 — Testing & Reliability
@@ -1470,7 +1479,7 @@ Every phase produces something usable.
 [x] PHASE 11 — Multi-File Support
 [x] PHASE 12 — Project Analytics
 [x] PHASE 13 — UX & Visual Polish
-[ ] PHASE 14 — Accessibility
+[x] PHASE 14 — Accessibility
 [ ] PHASE 15 — Testing & Reliability
 [ ] PHASE 16 — Sync Optimization
 [ ] PHASE 17 — Documentation

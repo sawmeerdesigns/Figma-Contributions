@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–8 complete · Next: Phase 9 (statistics dashboard)  
+**Status:** Phases 1–9 complete · Next: Phase 10 (year navigation)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1005,6 +1005,8 @@ October
 
 Do not start multi-file support until statistics match the underlying data.
 
+- [x] `src/components/stats/StatsGrid.tsx`; `calculateStats` gained `mostActiveMonth`. Verified 2026-10-06: all six stats match an independent computation from the JSON for real data (2026) and demo data (2025, 2026). Stats are for the selected year, except the current streak, which is always as of today across all data.
+
 ---
 
 # PHASE 10 — Year Navigation
@@ -1455,7 +1457,7 @@ Every phase produces something usable.
 [x] PHASE 6 — Contribution Engine
 [x] PHASE 7 — Calendar Engine
 [x] PHASE 8 — Heatmap UI
-[ ] PHASE 9 — Statistics Dashboard
+[x] PHASE 9 — Statistics Dashboard
 [ ] PHASE 10 — Year Navigation
 [ ] PHASE 11 — Multi-File Support
 [ ] PHASE 12 — Project Analytics

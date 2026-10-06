@@ -8,6 +8,8 @@ export type ContributionStats = {
   currentStreak: number;
   longestStreak: number;
   mostActiveDay: { date: string; count: number } | null;
+  // month is "YYYY-MM"
+  mostActiveMonth: { month: string; count: number } | null;
 };
 
 const DAY_MS = 86_400_000;
@@ -34,6 +36,7 @@ export function calculateStats(counts: DailyCounts, today = new Date().toISOStri
   let longestStreak = 0;
   let run = 0;
   let mostActiveDay: ContributionStats["mostActiveDay"] = null;
+  const byMonth = new Map<string, number>();
 
   active.forEach(([date, count], i) => {
     total += count;
@@ -41,11 +44,18 @@ export function calculateStats(counts: DailyCounts, today = new Date().toISOStri
     longestStreak = Math.max(longestStreak, run);
     // Ties go to the earliest day.
     if (!mostActiveDay || count > mostActiveDay.count) mostActiveDay = { date, count };
+    byMonth.set(date.slice(0, 7), (byMonth.get(date.slice(0, 7)) ?? 0) + count);
   });
+
+  let mostActiveMonth: ContributionStats["mostActiveMonth"] = null;
+  // Map keeps insertion (date) order, so ties again go to the earliest month.
+  for (const [month, count] of byMonth) {
+    if (!mostActiveMonth || count > mostActiveMonth.count) mostActiveMonth = { month, count };
+  }
 
   const last = active.at(-1);
   const daysSinceLast = last ? dayNumber(today) - dayNumber(last[0]) : Infinity;
   const currentStreak = daysSinceLast === 0 || daysSinceLast === 1 ? run : 0;
 
-  return { total, activeDays: active.length, currentStreak, longestStreak, mostActiveDay };
+  return { total, activeDays: active.length, currentStreak, longestStreak, mostActiveDay, mostActiveMonth };
 }

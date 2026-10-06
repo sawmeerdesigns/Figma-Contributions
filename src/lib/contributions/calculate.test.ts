@@ -12,6 +12,7 @@ test("totals, active days, most active day; zero-count days ignored", () => {
   assert.equal(stats.total, 16);
   assert.equal(stats.activeDays, 3);
   assert.deepEqual(stats.mostActiveDay, { date: "2026-01-05", count: 7 });
+  assert.deepEqual(stats.mostActiveMonth, { month: "2026-01", count: 16 });
   assert.equal(stats.longestStreak, 2);
   assert.equal(stats.currentStreak, 0);
 });
@@ -31,6 +32,11 @@ test("current streak ends today or yesterday, otherwise it is 0", () => {
 
 test("empty data", () => {
   assert.deepEqual(calculateStats({}, "2026-10-06"), {
-    total: 0, activeDays: 0, currentStreak: 0, longestStreak: 0, mostActiveDay: null,
+    total: 0, activeDays: 0, currentStreak: 0, longestStreak: 0, mostActiveDay: null, mostActiveMonth: null,
   });
+});
+
+test("most active month sums the month; ties go to the earliest", () => {
+  const counts = { "2026-08-01": 9, "2026-09-10": 5, "2026-09-11": 5, "2026-10-01": 10 };
+  assert.deepEqual(calculateStats(counts, "2026-10-06").mostActiveMonth, { month: "2026-09", count: 10 });
 });

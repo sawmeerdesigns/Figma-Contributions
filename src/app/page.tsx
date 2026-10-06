@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Link from "next/link";
 import { ContributionGraph, ContributionLegend } from "@/components/contribution/ContributionGraph";
+import { StatsGrid } from "@/components/stats/StatsGrid";
+import { calculateStats } from "@/lib/contributions/calculate";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
 import type { DailyCounts } from "@/lib/contributions/normalize";
 import demo from "../../data/demo.json";
@@ -24,7 +26,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const year = years.includes(requested) ? requested : (years[0] ?? new Date().getUTCFullYear());
 
   const calendar = buildYearCalendar(counts, year);
-  const total = calendar.weeks.flat().reduce((sum, day) => sum + (day?.count ?? 0), 0);
+  const stats = calculateStats(Object.fromEntries(Object.entries(counts).filter(([date]) => date.startsWith(`${year}-`))));
+  const { currentStreak } = calculateStats(counts);
+  const total = stats.total;
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-16">
@@ -73,6 +77,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           )}
           <ContributionLegend />
         </div>
+
+        <StatsGrid stats={stats} currentStreak={currentStreak} year={year} />
       </section>
     </main>
   );

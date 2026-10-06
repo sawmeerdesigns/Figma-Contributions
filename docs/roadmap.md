@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–5 complete · Next: Phase 6 (contribution engine)  
+**Status:** Phases 1–6 complete · Next: Phase 7 (calendar engine)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -872,6 +872,8 @@ the engine correctly returns:
 
 Do not start Phase 7 until the calculation engine passes test cases.
 
+- [x] `src/lib/contributions/calculate.ts` (`getLevel`, `calculateStats`) passes `npm test`: the cases above, level boundaries, streaks across month ends, leap days and years, and empty data. Verified 2026-10-06 on real data: 235 total, 42 active days, current streak 4, longest 15, most active 2026-09-24 (19).
+
 ---
 
 # PHASE 7 — Calendar Engine
@@ -1446,7 +1448,7 @@ Every phase produces something usable.
 [x] PHASE 3 — Environment & Figma Configuration
 [x] PHASE 4 — Figma API Client
 [x] PHASE 5 — Raw Data Processing
-[ ] PHASE 6 — Contribution Engine
+[x] PHASE 6 — Contribution Engine
 [ ] PHASE 7 — Calendar Engine
 [ ] PHASE 8 — Heatmap UI
 [ ] PHASE 9 — Statistics Dashboard

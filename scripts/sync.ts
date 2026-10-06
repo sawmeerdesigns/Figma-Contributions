@@ -3,6 +3,7 @@
 
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { calculateStats } from "../src/lib/contributions/calculate.ts";
 import { countByDay } from "../src/lib/contributions/normalize.ts";
 import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
@@ -66,7 +67,8 @@ for (const fileKey of fileKeys) {
 
 const counts = countByDay(mine);
 const days = Object.keys(counts);
-const counted = Object.values(counts).reduce((sum, n) => sum + n, 0);
+const stats = calculateStats(counts);
+const counted = stats.total;
 console.log("✓ Activity processed");
 
 const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
@@ -80,7 +82,9 @@ console.log("✓ Contributions generated");
 
 console.log(`\nTotal versions by you: ${counted}`);
 if (counted < mine.length) console.log(`Skipped (bad timestamp): ${mine.length - counted}`);
-console.log(`Active days: ${days.length}`);
+console.log(`Active days: ${stats.activeDays}`);
+console.log(`Current streak: ${stats.currentStreak} · Longest streak: ${stats.longestStreak}`);
+if (stats.mostActiveDay) console.log(`Most active day: ${stats.mostActiveDay.date} (${stats.mostActiveDay.count})`);
 if (days.length > 0) {
   console.log(`First active day: ${days[0]}`);
   console.log(`Last active day: ${days.at(-1)}`);

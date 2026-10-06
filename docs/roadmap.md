@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–15 complete · Next: Phase 16 (sync optimization)  
+**Status:** Phases 1–16 complete · Next: Phase 17 (documentation)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1240,6 +1240,8 @@ Save
 
 The implementation must respect Figma API rate limits.
 
+- [x] Done 2026-10-07 (phase-1 §31 #12). Per-file `syncedThrough` bookmark + stored `userId`; later syncs read pages newest-first and stop at the bookmark, then merge counts into the stored days. `npm run sync -- --full` forces a rebuild. Name lookups stop after the first refusal. Sync prints the request count. Verified on real data: full sync 9 requests → incremental 4 (1 `/me`, 1 versions page per file, 1 name lookup), identical days (235). Tests: early stop (second page never requested), merge, nothing-new, removed files dropped, full fetch on user change or pre-Phase-16 data. Rate limits: still sequential, with the existing retry handling; fewer requests is the main win.
+
 ---
 
 # PHASE 17 — Documentation
@@ -1488,7 +1490,7 @@ Every phase produces something usable.
 [x] PHASE 13 — UX & Visual Polish
 [x] PHASE 14 — Accessibility
 [x] PHASE 15 — Testing & Reliability
-[ ] PHASE 16 — Sync Optimization
+[x] PHASE 16 — Sync Optimization
 [ ] PHASE 17 — Documentation
 [ ] PHASE 18 — Open Source Readiness
 [ ] PHASE 19 — Public Demo

@@ -3,6 +3,9 @@ const FIGMA_API_HOST = "api.figma.com";
 const MAX_RETRY_WAIT_SECONDS = 60;
 export const MAX_RETRIES = 3;
 
+// Requests sent to Figma by this process (including retries), for the sync summary.
+export let requestCount = 0;
+
 export class FigmaApiError extends Error {
   status: number;
 
@@ -33,6 +36,7 @@ export async function figmaGet<T>(url: string, token: string): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     let res: Response;
     try {
+      requestCount++;
       res = await fetch(url, { headers: { "X-Figma-Token": token }, signal: AbortSignal.timeout(30_000) });
     } catch {
       throw new FigmaApiError(0, "Could not reach the Figma API. Check your internet connection.");

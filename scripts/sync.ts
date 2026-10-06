@@ -1,11 +1,11 @@
 // Run with `npm run sync`. Node loads .env.local via --env-file-if-exists; this script
 // is the only place the token is read, so it never reaches the Next.js client bundle.
 
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { calculateStats } from "../src/lib/contributions/calculate.ts";
 import { sumDays, type ContributionData } from "../src/lib/contributions/normalize.ts";
-import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
+import { FigmaApiError, fetchCurrentUserId, requestCount } from "../src/lib/figma/client.ts";
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
 import { collectContributions } from "../src/lib/sync.ts";
 
@@ -37,6 +37,19 @@ function loadConfig() {
   }
 }
 
+const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
+
+// The last sync's data, so only newer versions are fetched. `npm run sync -- --full` ignores it.
+async function loadPrevious(): Promise<ContributionData | undefined> {
+  if (process.argv.includes("--full")) return undefined;
+  try {
+    const data = JSON.parse(await readFile(outFile, "utf8"));
+    return Array.isArray(data.files) ? data : undefined;
+  } catch {
+    return undefined; // missing or unreadable: do a full sync
+  }
+}
+
 console.log("Figma Contributions Sync\n");
 const { token, fileKeys } = loadConfig();
 console.log(`✓ Configuration loaded (${fileKeys.length} file${fileKeys.length === 1 ? "" : "s"})`);
@@ -50,14 +63,18 @@ try {
 console.log("✓ Authentication successful");
 
 console.log("\nFetching version history (your versions / all versions)...");
-let mine = 0;
+let newOwn = 0;
+let skipped = 0;
 let exactNames = 0;
 let data: ContributionData;
+const previous = await loadPrevious();
 try {
-  data = await collectContributions(fileKeys, userId, token, ({ key, name, own, all, exactName }) => {
-    mine += own;
+  data = await collectContributions(fileKeys, userId, token, previous, ({ key, name, mode, own, skipped: bad, fetched, exactName }) => {
+    newOwn += own;
+    skipped += bad;
     if (exactName) exactNames++;
-    console.log(`✓ ${name} (${key}): ${own} / ${all}`);
+    const what = mode === "full" ? `${own} / ${fetched} (full history)` : `+${own} / ${fetched} new`;
+    console.log(`✓ ${name} (${key}): ${what}`);
   });
 } catch (error) {
   fail(errorMessage(error));
@@ -72,7 +89,6 @@ const stats = calculateStats(counts);
 const counted = stats.total;
 console.log("✓ Activity processed");
 
-const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
 try {
   await mkdir(fileURLToPath(new URL("../data/", import.meta.url)), { recursive: true });
   // Write then rename, so an interrupted sync never leaves a half-written file for the app to read.
@@ -83,8 +99,9 @@ try {
 }
 console.log("✓ Contributions generated");
 
-console.log(`\nTotal versions by you: ${counted}`);
-if (counted < mine) console.log(`Skipped (bad timestamp): ${mine - counted}`);
+console.log(`\nTotal versions by you: ${counted}${previous ? ` (${newOwn} new this sync)` : ""}`);
+if (skipped > 0) console.log(`Skipped (bad timestamp): ${skipped}`);
+console.log(`Figma API requests: ${requestCount}`);
 console.log(`Active days: ${stats.activeDays}`);
 console.log(`Current streak: ${stats.currentStreak} · Longest streak: ${stats.longestStreak}`);
 if (stats.mostActiveDay) console.log(`Most active day: ${stats.mostActiveDay.date} (${stats.mostActiveDay.count})`);

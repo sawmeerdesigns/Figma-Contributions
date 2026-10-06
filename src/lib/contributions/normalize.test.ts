@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import type { FigmaVersion } from "../figma/types.ts";
-import { countByDay, sumDays } from "./normalize.ts";
+import { countByDay, sumDays, type FileContributions } from "./normalize.ts";
 
 const v = (id: string, created_at: string) => ({ id, created_at }) as FigmaVersion;
 
@@ -37,10 +37,11 @@ test("skips versions with missing or malformed timestamps", () => {
 });
 
 test("sums files into daily totals, sorted by date", () => {
-  const totals = sumDays([
+  const files: FileContributions[] = [
     { key: "A", name: "A", days: { "2026-10-06": 2, "2026-10-01": 1 } },
     { key: "B", name: "B", days: { "2026-10-06": 3, "2026-09-30": 4 } },
-  ]);
+  ];
+  const totals = sumDays(files);
   assert.deepEqual(totals, { "2026-09-30": 4, "2026-10-01": 1, "2026-10-06": 5 });
   assert.deepEqual(Object.keys(totals), ["2026-09-30", "2026-10-01", "2026-10-06"]);
 });

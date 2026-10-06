@@ -7,20 +7,29 @@ import { ProjectList } from "@/components/stats/ProjectList";
 import { StatsGrid } from "@/components/stats/StatsGrid";
 import { card, formatCount } from "@/components/ui";
 import { calculateStats, rankProjects } from "@/lib/contributions/calculate";
+import { shiftToToday } from "@/lib/contributions/demo";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
 import { sumDays, type ContributionData } from "@/lib/contributions/normalize";
 import { resolveYear } from "@/lib/contributions/years";
 import demo from "../../data/demo.json";
 
+const REPO = "https://github.com/sawmeerdesigns/Figma-Contributions";
+// Public deployments only ever show demo data (roadmap Phase 19), even if a real data file was uploaded.
+const DEMO_ONLY = process.env.VERCEL === "1" || process.env.DEMO_MODE === "1";
+
+// Demo dates are shifted so the latest day is today: the demo never looks abandoned.
+// JSON imports get a literal type per file (optional `undefined` dates), so go through unknown.
+const demoData = () => ({ data: shiftToToday(demo as unknown as ContributionData, new Date().toISOString().slice(0, 10)), isDemo: true });
+
 // Real data from `npm run sync` (gitignored). Without it, show committed demo data (phase-1 §31 #6).
 async function loadData(): Promise<{ data: ContributionData; isDemo: boolean }> {
+  if (DEMO_ONLY) return demoData();
   let file;
   try {
     file = await readFile(path.join(process.cwd(), "data", "contributions.json"), "utf8");
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    // JSON imports get a literal type per file (optional `undefined` dates), so go through unknown.
-    return { data: demo as unknown as ContributionData, isDemo: true };
+    return demoData();
   }
   const data = JSON.parse(file);
   // Files written before Phase 12 were a bare { date: count } map.
@@ -45,8 +54,20 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
       {isDemo && (
         <p role="status" className="w-fit max-w-full rounded-lg border border-brand/40 bg-brand/10 px-3 py-2 text-sm">
-          <span className="font-medium text-brand-text">Demo data.</span> Run <code className="font-mono">npm run sync</code> to
-          see your own.
+          <span className="font-medium text-brand-text">Demo with made-up data.</span>{" "}
+          {DEMO_ONLY ? (
+            <>
+              Run it locally to see your own Figma activity:{" "}
+              <a href={REPO} className="font-medium text-brand-text underline underline-offset-2 hover:no-underline">
+                get it on GitHub
+              </a>
+              .
+            </>
+          ) : (
+            <>
+              Run <code className="font-mono">npm run sync</code> to see your own.
+            </>
+          )}
         </p>
       )}
 

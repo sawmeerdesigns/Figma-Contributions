@@ -25,7 +25,7 @@ Developers get a picture of their work over time for free on GitHub. Designers d
 - **Year navigation:** any year from your first synced year to now, including empty ones.
 - **Fast re-syncs:** after the first sync, only new versions are fetched, usually one request per file.
 - **Dark and light themes**, responsive down to 320px, keyboard and screen reader accessible.
-- **Demo mode:** with no synced data, the app shows made-up data, which is what a public deployment shows.
+- **Demo mode:** with no synced data, the app shows made-up data, shifted so the latest day is always today. A public deployment always shows the demo.
 
 ## Architecture
 
@@ -177,9 +177,23 @@ Thresholds live in `getLevel` (`src/lib/contributions/calculate.ts`). They're ap
 | `npm run sync` | Sync with Figma (needs `.env.local`) |
 
 - **CI** (`.github/workflows/ci.yml`) runs test, typecheck, lint and build on every push and pull request.
-- **Demo mode:** with no `data/contributions.json`, the page uses `data/demo.json`. Move your file aside to see the demo.
+- **Demo mode:** with no `data/contributions.json`, the page uses `data/demo.json`. To see the demo with your file in place, run `DEMO_MODE=1 npm run dev`.
 - **Next.js version:** the project uses Next.js 16, whose APIs differ from older versions. See [AGENTS.md](AGENTS.md).
 - **Tests sit next to the code they cover** (`*.test.ts`). The contrast test (`src/app/contrast.test.ts`) fails if a theme color drops below WCAG AA.
+
+## Deploying a public demo
+
+A deployment shows **only the demo data**, never your token or real activity:
+
+- **On Vercel, the page forces demo mode** (`VERCEL=1`), even if a real data file were uploaded. Set `DEMO_MODE=1` to force it on any other host.
+- **Nothing private is in the repo.** `.env.local` and `data/contributions.json` are gitignored, and `.vercelignore` keeps them out of CLI deploys too.
+- **No environment variables are needed.** Never add `FIGMA_ACCESS_TOKEN` to a deployment.
+
+To deploy your own on Vercel:
+
+1. Open [vercel.com/new](https://vercel.com/new) and import your fork of this repository. The Next.js preset needs no changes.
+2. Optionally, under **Environment Variables**, add `DEMO_MODE` = `1` as an extra safeguard.
+3. Click **Deploy**. Every push to `main` redeploys.
 
 ## Troubleshooting
 

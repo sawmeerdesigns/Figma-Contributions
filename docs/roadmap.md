@@ -1324,6 +1324,9 @@ User's Figma data
 
 This keeps the project privacy-friendly.
 
+- [x] Code ready 2026-10-07: the page forces demo data on Vercel (`VERCEL=1`) or with `DEMO_MODE=1`, even if a real data file is present; demo dates shift so the latest day is today (`src/lib/contributions/demo.ts`, tested to stay live through 2030); the demo banner links to the repository; `.vercelignore` excludes `.env*` and real data from CLI deploys. Verified with a production build started with `VERCEL=1` next to real data: only demo projects rendered, and no real file names or keys appear in the build output.
+- [ ] Deployed via the Vercel GitHub integration and the live URL checked (demo banner shown, no real data)
+
 ---
 
 # PHASE 20 — Version 1.0 Release

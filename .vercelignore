@@ -1,0 +1,5 @@
+# The public deployment must never include secrets or real activity (roadmap Phase 19).
+.env*
+!.env.example
+data/contributions.json
+data/contributions.json.tmp

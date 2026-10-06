@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–12 complete · Next: Phase 13 (UX & visual polish)  
+**Status:** Phases 1–13 complete · Next: Phase 14 (accessibility)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1131,6 +1131,8 @@ Do not blindly copy GitHub's visual design.
 
 Create a distinct Figma-oriented identity.
 
+- [x] Done 2026-10-06. Palette above as CSS tokens (`globals.css`: background/surface/line/foreground/muted/brand + a 5-step level ramp on `#6D57E8`) with a light counterpart; Geist actually applied (body was stuck on Arial); card surfaces; 3×3 mini-heatmap mark (`SiteHeader.tsx`) and matching `app/icon.svg` favicon (default Next favicon removed); `app/loading.tsx` skeleton; `app/error.tsx` with Next 16 `retry` (checked: old-format data shows the error, restoring data + Try again recovers); restyled demo banner and empty state; hover scale on cells, card border hover, year-pill transitions, all `motion-safe`. Checked dark + light and 320/390px widths in the browser.
+
 ---
 
 # PHASE 14 — Accessibility
@@ -1467,7 +1469,7 @@ Every phase produces something usable.
 [x] PHASE 10 — Year Navigation
 [x] PHASE 11 — Multi-File Support
 [x] PHASE 12 — Project Analytics
-[ ] PHASE 13 — UX & Visual Polish
+[x] PHASE 13 — UX & Visual Polish
 [ ] PHASE 14 — Accessibility
 [ ] PHASE 15 — Testing & Reliability
 [ ] PHASE 16 — Sync Optimization

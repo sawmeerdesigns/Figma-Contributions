@@ -74,4 +74,4 @@ Branch URLs count the branch's history. Add new files to this list yourself; syn
 
 ## Status
 
-See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Phase 10 (year navigation) ✅ · Phase 11 (multi-file) ✅ via `FIGMA_FILE_KEYS` · Phase 12 (project analytics) ✅ · Next: Phase 13 (UX & visual polish). Decisions: [docs/phase-1.md §31](docs/phase-1.md).
+See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Phase 10 (year navigation) ✅ · Phase 11 (multi-file) ✅ via `FIGMA_FILE_KEYS` · Phase 12 (project analytics) ✅ · Phase 13 (UX & visual polish) ✅ · Next: Phase 14 (accessibility). Decisions: [docs/phase-1.md §31](docs/phase-1.md).

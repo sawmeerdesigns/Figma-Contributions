@@ -29,12 +29,17 @@ export function describeDay({ date, count }: ContributionDay) {
 }
 
 function Cell({ level }: { level: Level }) {
-  return <span className="block size-[11px] rounded-[2px]" style={{ background: `var(--level-${level})` }} />;
+  return (
+    <span
+      className="block size-[11px] rounded-[3px] group-hover:scale-125 motion-safe:transition-transform motion-safe:duration-100"
+      style={{ background: `var(--level-${level})` }}
+    />
+  );
 }
 
 export function ContributionLegend() {
   return (
-    <div className="flex items-center gap-1 text-xs text-zinc-500" aria-hidden>
+    <div className="flex items-center gap-1 text-xs text-muted" aria-hidden>
       Less
       {LEVELS.map((level) => (
         <Cell key={level} level={level} />
@@ -84,11 +89,11 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
         aria-label={`Figma contributions in ${year}`}
         aria-readonly
         onKeyDown={onKeyDown}
-        className="border-separate border-spacing-[3px] text-xs text-zinc-500"
+        className="border-separate border-spacing-[3px] text-xs text-muted"
       >
         <thead>
           <tr>
-            <td className="sticky left-0 bg-background" />
+            <td className="sticky left-0 bg-surface" />
             {spans[0].week > 0 && <td colSpan={spans[0].week} />}
             {spans.map((m) => (
               <th key={m.month} colSpan={m.span} scope="colgroup" className="text-left font-normal">
@@ -100,7 +105,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
         <tbody>
           {ROW_LABELS.map((label, r) => (
             <tr key={r}>
-              <td className="sticky left-0 bg-background pr-1 leading-none" aria-hidden>
+              <td className="sticky left-0 bg-surface pr-1 leading-none" aria-hidden>
                 {label}
               </td>
               {weeks.map((week, w) => {
@@ -122,7 +127,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
                       show(day, e.currentTarget);
                     }}
                     onBlur={() => setTip(null)}
-                    className="rounded-[2px] p-0 outline-offset-1 hover:outline hover:outline-1 hover:outline-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-zinc-500"
+                    className="group rounded-[3px] p-0 outline-offset-1 focus-visible:outline-2 focus-visible:outline-brand"
                   >
                     <Cell level={day.level} />
                   </td>
@@ -135,7 +140,7 @@ export function ContributionGraph({ weeks, months, year }: YearCalendar & { year
       {tip && (
         <div
           aria-hidden
-          className="pointer-events-none fixed z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-zinc-900 px-2 py-1 text-xs text-white shadow dark:bg-zinc-100 dark:text-zinc-900"
+          className="pointer-events-none fixed z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background shadow-lg"
           style={{ left: tip.x, top: tip.y - 6 }}
         >
           {tip.text}

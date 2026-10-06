@@ -1,37 +1,53 @@
 @import "tailwindcss";
 
+/* Palette from roadmap Phase 13 (dark), with a light counterpart. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* Heatmap levels 0–4 (lib/contributions getLevel) */
-  --level-0: #ebedf0;
-  --level-1: #ddd0ff;
-  --level-2: #b794ff;
-  --level-3: #8b5cf6;
-  --level-4: #5b21b6;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --line: #e2e8f0;
+  --foreground: #0f172a;
+  --muted: #64748b;
+  --brand: #6d57e8;
+  --brand-text: #5641d0;
+  /* Heatmap levels 0–4 (lib/contributions getLevel), a ramp on the brand colour */
+  --level-0: #e9ecf3;
+  --level-1: #d6cffb;
+  --level-2: #a797f3;
+  --level-3: #6d57e8;
+  --level-4: #3f2fa8;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --level-0: #1f1f23;
-    --level-1: #3b2470;
-    --level-2: #5b34b0;
-    --level-3: #8b5cf6;
-    --level-4: #c4b5fd;
+    --background: #020617;
+    --surface: #0f1728;
+    --line: #1e293b;
+    --foreground: #f1f5f9;
+    --muted: #94a3b8;
+    --brand: #6d57e8;
+    --brand-text: #a99cf6;
+    --level-0: #1a2338;
+    --level-1: #2f2a6e;
+    --level-2: #4b3cb4;
+    --level-3: #6d57e8;
+    --level-4: #b9aeff;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-text: var(--brand-text);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }

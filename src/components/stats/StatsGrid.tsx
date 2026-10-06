@@ -1,3 +1,4 @@
+import { card } from "@/components/ui";
 import type { ContributionStats } from "@/lib/contributions/calculate";
 
 const formatDate = (date: string) =>
@@ -8,10 +9,10 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 function StatCard({ value, label, detail }: { value: string | number; label: string; detail?: string }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-lg border border-zinc-200 px-4 py-3 dark:border-zinc-800">
-      <dt className="order-2 text-sm text-zinc-600 dark:text-zinc-400">{label}</dt>
+    <div className={`${card} flex flex-col gap-0.5 px-4 py-3 transition-colors hover:border-brand/50`}>
+      <dt className="order-2 text-sm text-muted">{label}</dt>
       <dd className="order-1 text-xl font-semibold tabular-nums tracking-tight [overflow-wrap:anywhere] @lg:text-2xl">{value}</dd>
-      {detail && <dd className="order-3 text-xs text-zinc-500">{detail}</dd>}
+      {detail && <dd className="order-3 text-xs text-muted">{detail}</dd>}
     </div>
   );
 }

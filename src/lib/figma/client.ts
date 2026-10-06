@@ -66,3 +66,18 @@ export async function fetchCurrentUserId(token: string): Promise<string> {
     throw error;
   }
 }
+
+// The file's current name, if the token has the optional file_metadata:read scope. Best-effort:
+// any Figma error (403 missing scope, rate limit, ...) returns null so sync falls back to the URL name.
+export async function fetchFileName(fileKey: string, token: string): Promise<string | null> {
+  try {
+    const meta = await figmaGet<{ file?: { name?: string } }>(
+      `https://${FIGMA_API_HOST}/v1/files/${encodeURIComponent(fileKey)}/meta`,
+      token,
+    );
+    return meta.file?.name ?? null;
+  } catch (error) {
+    if (error instanceof FigmaApiError) return null;
+    throw error;
+  }
+}

@@ -1,4 +1,4 @@
-import type { DailyCounts } from "./normalize.ts";
+import type { DailyCounts, FileContributions } from "./normalize.ts";
 
 export type Level = 0 | 1 | 2 | 3 | 4;
 
@@ -58,4 +58,18 @@ export function calculateStats(counts: DailyCounts, today = new Date().toISOStri
   const currentStreak = daysSinceLast === 0 || daysSinceLast === 1 ? run : 0;
 
   return { total, activeDays: active.length, currentStreak, longestStreak, mostActiveDay, mostActiveMonth };
+}
+
+export type ProjectTotal = { key: string; name: string; count: number };
+
+// Versions per file in `year`, most active first (ties by name). Files with no activity that year are left out.
+export function rankProjects(files: FileContributions[], year: number): ProjectTotal[] {
+  return files
+    .map(({ key, name, days }) => ({
+      key,
+      name,
+      count: Object.entries(days).reduce((sum, [date, n]) => (date.startsWith(`${year}-`) ? sum + n : sum), 0),
+    }))
+    .filter((p) => p.count > 0)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }

@@ -4,8 +4,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { calculateStats } from "../src/lib/contributions/calculate.ts";
-import { countByDay } from "../src/lib/contributions/normalize.ts";
-import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
+import { countByDay, sumDays, type ContributionData } from "../src/lib/contributions/normalize.ts";
+import { FigmaApiError, fetchCurrentUserId, fetchFileName } from "../src/lib/figma/client.ts";
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
 import type { FigmaVersion } from "../src/lib/figma/types.ts";
 import { fetchAllVersions } from "../src/lib/figma/versions.ts";
@@ -51,21 +51,31 @@ try {
 console.log("✓ Authentication successful");
 
 console.log("\nFetching version history (your versions / all versions)...");
-const mine: FigmaVersion[] = [];
+const data: ContributionData = { files: [] };
+let mine = 0;
+let exactNames = 0;
 // ponytail: sequential to stay under Figma's rate limits; parallelize with a small pool if many files make sync slow.
-for (const fileKey of fileKeys) {
+for (const { key, name: urlName } of fileKeys) {
   let versions: FigmaVersion[];
   try {
-    versions = await fetchAllVersions(fileKey, token);
+    versions = await fetchAllVersions(key, token);
   } catch (error) {
-    fail(`File ${fileKey}: ${errorMessage(error)}`);
+    fail(`File ${key}: ${errorMessage(error)}`);
   }
+  // Name: Figma's current name (needs file_metadata:read), else the pasted URL's slug, else the key.
+  const figmaName = await fetchFileName(key, token);
+  if (figmaName) exactNames++;
+  const name = figmaName ?? urlName ?? key;
   const own = versions.filter((v) => v.user?.id === userId);
-  mine.push(...own);
-  console.log(`✓ ${fileKey}: ${own.length} / ${versions.length}`);
+  mine += own.length;
+  data.files.push({ key, name, days: countByDay(own) });
+  console.log(`✓ ${name} (${key}): ${own.length} / ${versions.length}`);
+}
+if (exactNames < fileKeys.length) {
+  console.log("  Names come from your file URLs. Add the file_metadata:read scope to your token for Figma's current names.");
 }
 
-const counts = countByDay(mine);
+const counts = sumDays(data.files);
 const days = Object.keys(counts);
 const stats = calculateStats(counts);
 const counted = stats.total;
@@ -74,14 +84,14 @@ console.log("✓ Activity processed");
 const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
 try {
   await mkdir(fileURLToPath(new URL("../data/", import.meta.url)), { recursive: true });
-  await writeFile(outFile, `${JSON.stringify(counts, null, 2)}\n`);
+  await writeFile(outFile, `${JSON.stringify(data, null, 2)}\n`);
 } catch (error) {
   fail(`Could not write ${outFile}: ${(error as Error).message}`);
 }
 console.log("✓ Contributions generated");
 
 console.log(`\nTotal versions by you: ${counted}`);
-if (counted < mine.length) console.log(`Skipped (bad timestamp): ${mine.length - counted}`);
+if (counted < mine) console.log(`Skipped (bad timestamp): ${mine - counted}`);
 console.log(`Active days: ${stats.activeDays}`);
 console.log(`Current streak: ${stats.currentStreak} · Longest streak: ${stats.longestStreak}`);
 if (stats.mostActiveDay) console.log(`Most active day: ${stats.mostActiveDay.date} (${stats.mostActiveDay.count})`);
@@ -89,7 +99,7 @@ if (days.length > 0) {
   console.log(`First active day: ${days[0]}`);
   console.log(`Last active day: ${days.at(-1)}`);
 } else {
-  // Still written (as {}), so an old file from a previous sync doesn't linger.
+  // Still written (with empty days), so an old file from a previous sync doesn't linger.
   console.log("No Figma activity by you found in these files.");
 }
 console.log("\nData written to:\ndata/contributions.json");

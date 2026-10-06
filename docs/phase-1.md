@@ -1034,7 +1034,7 @@ If any answer is unclear:
 
 **Gate:** ✅ Passed. All §28 checklist items are complete.
 
-**Implementation:** In progress. Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ (verified with a real token 2026-10-06) · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Phase 10 (year navigation) ✅ · Phase 11 (multi-file) ✅. See `roadmap.md` §17.
+**Implementation:** In progress. Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ (verified with a real token 2026-10-06) · Phase 5 (raw data processing) ✅ · Phase 6 (contribution engine) ✅ · Phase 7 (calendar engine) ✅ · Phase 8 (heatmap UI) ✅ · Phase 9 (statistics dashboard) ✅ · Phase 10 (year navigation) ✅ · Phase 11 (multi-file) ✅ · Phase 12 (project analytics) ✅. See `roadmap.md` §17.
 
 ---
 
@@ -1058,9 +1058,10 @@ These resolve gaps found while reviewing this document against `roadmap.md`. Whe
 | 2 | Autosaves vs named versions | Every entry returned by `/versions` (autosave or named) counts as 1 activity. The README states this. |
 | 3 | PAT scopes / expiry | Token needs the `file_versions:read` and `current_user:read` scopes. PATs expire (max 90 days); a 401/403 error message says to regenerate. |
 | 4 | §14 `year` field vs §17 multi-year | No top-level `year`. Storage holds all dates across all years; the UI picks the year. |
-| 5 | Where levels are computed (§10 vs §11) | **Storage holds counts only**: `{ "YYYY-MM-DD": count }` (matches roadmap Phase 5). Levels, streaks and stats are computed at read time by `lib/contributions`, so thresholds can change without re-syncing and storage stays swappable for SQLite. |
+| 5 | Where levels are computed (§10 vs §11) | **Storage holds counts only**: daily counts per file, `{ "files": [{ "key", "name", "days": { "YYYY-MM-DD": count } }] }` (was a single `{ date: count }` map until Phase 12, see #11). Levels, streaks and stats are computed at read time by `lib/contributions`, so thresholds can change without re-syncing and storage stays swappable for SQLite. |
 | 6 | Real data in a public repo | `data/contributions.json` (real, from sync) is gitignored. A committed `data/demo.json` is the fallback the UI uses when no real data exists — that is what Vercel shows. |
 | 7 | Loading `.env.local` in the sync script | Use Node's built-in `--env-file-if-exists=.env.local` flag (`package.json` `sync` script), so a missing file reaches the script's friendly "missing token" message instead of a Node crash. No `dotenv` dependency. |
 | 8 | User filtering | Sync counts only versions whose `user.id` matches the token owner (`GET /v1/me`). Required once files are shared, so teammates' versions aren't counted. |
 | 9 | Placeholder files | Files are created by the phase that needs them (roadmap §11: "Do not create every file immediately"). |
 | 10 | One file vs many | `FIGMA_FILE_KEYS` is a comma-separated list of keys or file URLs; sync fetches each file in turn and merges the user's versions. `FIGMA_FILE_KEY` is still accepted. Auto-discovery is future scope (§23). |
+| 11 | Project analytics needs per-file data (roadmap Phase 12) | `data/contributions.json` stores daily counts per file with its name; totals are summed at read time. File name: Figma's current name via `GET /v1/files/:key/meta` if the token has the optional `file_metadata:read` scope, else the pasted URL's slug, else the key. A pre-Phase-12 file shows an error asking to re-sync. |

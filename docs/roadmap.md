@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–11 complete (Phase 11 multi-file was pulled forward: `FIGMA_FILE_KEYS`, phase-1 §31 #10)  
+**Status:** Phases 1–12 complete · Next: Phase 13 (UX & visual polish)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1090,6 +1090,8 @@ Travelverse            27
 
 Eventually users could inspect project-specific activity.
 
+- [x] "Most active projects in <year>" list (`src/components/stats/ProjectList.tsx`, `rankProjects` in `calculate.ts`), backed by per-file storage (phase-1 §31 #11). Verified 2026-10-06: real data Design System 168 + Clinica 67 = 235; demo data per-project totals match an independent count for 2025 and 2026 and sum to the year totals. Per-project drill-down ("inspect project-specific activity") is not built.
+
 ---
 
 # PHASE 13 — UX & Visual Polish
@@ -1464,7 +1466,7 @@ Every phase produces something usable.
 [x] PHASE 9 — Statistics Dashboard
 [x] PHASE 10 — Year Navigation
 [x] PHASE 11 — Multi-File Support
-[ ] PHASE 12 — Project Analytics
+[x] PHASE 12 — Project Analytics
 [ ] PHASE 13 — UX & Visual Polish
 [ ] PHASE 14 — Accessibility
 [ ] PHASE 15 — Testing & Reliability

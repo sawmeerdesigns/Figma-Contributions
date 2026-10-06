@@ -2,32 +2,40 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Link from "next/link";
 import { ContributionGraph, ContributionLegend } from "@/components/contribution/ContributionGraph";
+import { ProjectList } from "@/components/stats/ProjectList";
 import { StatsGrid } from "@/components/stats/StatsGrid";
-import { calculateStats } from "@/lib/contributions/calculate";
+import { calculateStats, rankProjects } from "@/lib/contributions/calculate";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
-import type { DailyCounts } from "@/lib/contributions/normalize";
+import { sumDays, type ContributionData } from "@/lib/contributions/normalize";
 import { resolveYear } from "@/lib/contributions/years";
 import demo from "../../data/demo.json";
 
 // Real data from `npm run sync` (gitignored). Without it, show committed demo data (phase-1 §31 #6).
-async function loadCounts(): Promise<{ counts: DailyCounts; isDemo: boolean }> {
+async function loadData(): Promise<{ data: ContributionData; isDemo: boolean }> {
+  let file;
   try {
-    const file = await readFile(path.join(process.cwd(), "data", "contributions.json"), "utf8");
-    return { counts: JSON.parse(file), isDemo: false };
+    file = await readFile(path.join(process.cwd(), "data", "contributions.json"), "utf8");
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    return { counts: demo, isDemo: true };
+    // JSON imports get a literal type per file (optional `undefined` dates), so go through unknown.
+    return { data: demo as unknown as ContributionData, isDemo: true };
   }
+  const data = JSON.parse(file);
+  // Files written before Phase 12 were a bare { date: count } map.
+  if (!Array.isArray(data.files)) throw new Error("data/contributions.json is in an old format. Run `npm run sync` again.");
+  return { data, isDemo: false };
 }
 
 export default async function Home({ searchParams }: PageProps<"/">) {
-  const { counts, isDemo } = await loadCounts();
+  const { data, isDemo } = await loadData();
+  const counts = sumDays(data.files);
   const { year, years } = resolveYear(counts, (await searchParams).year, new Date().getUTCFullYear());
 
   const calendar = buildYearCalendar(counts, year);
   const stats = calculateStats(Object.fromEntries(Object.entries(counts).filter(([date]) => date.startsWith(`${year}-`))));
   const { currentStreak } = calculateStats(counts);
   const total = stats.total;
+  const projects = rankProjects(data.files, year);
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-16">
@@ -79,6 +87,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
 
         <StatsGrid stats={stats} currentStreak={currentStreak} year={year} />
+
+        <ProjectList projects={projects} year={year} />
       </section>
     </main>
   );

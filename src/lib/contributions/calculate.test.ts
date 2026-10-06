@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { calculateStats, getLevel } from "./calculate.ts";
+import { calculateStats, getLevel, rankProjects } from "./calculate.ts";
+import type { FileContributions } from "./normalize.ts";
 
 test("maps daily counts to levels (roadmap Phase 6 cases + boundaries)", () => {
   const cases: [number, number][] = [[0, 0], [2, 1], [5, 2], [10, 4], [1, 1], [3, 2], [6, 3], [9, 3], [50, 4]];
@@ -39,4 +40,19 @@ test("empty data", () => {
 test("most active month sums the month; ties go to the earliest", () => {
   const counts = { "2026-08-01": 9, "2026-09-10": 5, "2026-09-11": 5, "2026-10-01": 10 };
   assert.deepEqual(calculateStats(counts, "2026-10-06").mostActiveMonth, { month: "2026-09", count: 10 });
+});
+
+test("ranks projects by versions in the year; ties by name; inactive files dropped", () => {
+  const files: FileContributions[] = [
+    { key: "p", name: "Portfolio", days: { "2026-01-02": 3, "2025-12-31": 50 } },
+    { key: "h", name: "HRMS", days: { "2026-05-01": 7, "2026-05-02": 5 } },
+    { key: "a", name: "Archive", days: { "2025-03-01": 9 } },
+    { key: "c", name: "Club", days: { "2026-02-01": 3 } },
+  ];
+  assert.deepEqual(rankProjects(files, 2026), [
+    { key: "h", name: "HRMS", count: 12 },
+    { key: "c", name: "Club", count: 3 },
+    { key: "p", name: "Portfolio", count: 3 },
+  ]);
+  assert.deepEqual(rankProjects(files, 2024), []);
 });

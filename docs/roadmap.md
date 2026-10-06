@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–3 complete · Phase 4 (Figma API client) built, awaiting real-token verification  
+**Status:** Phases 1–4 complete · Next: Phase 5 (raw data processing)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -770,7 +770,7 @@ Do not build UI analytics.
 Until this phase can reliably retrieve real Figma data.
 
 - [x] Client, paginated version retrieval and error handling built (`npm test` covers pagination, the token host check, and auth/404/429 errors)
-- [ ] `npm run sync` verified against a real Figma file with a real token
+- [x] `npm run sync` verified against a real Figma file with a real token (69 versions, 2026-10-06)
 
 ---
 
@@ -1442,7 +1442,7 @@ Every phase produces something usable.
 [x] PHASE 1 — Project Definition & Architecture
 [x] PHASE 2 — GitHub Repository & Next.js
 [x] PHASE 3 — Environment & Figma Configuration
-[ ] PHASE 4 — Figma API Client
+[x] PHASE 4 — Figma API Client
 [ ] PHASE 5 — Raw Data Processing
 [ ] PHASE 6 — Contribution Engine
 [ ] PHASE 7 — Calendar Engine

@@ -68,4 +68,4 @@ Pasting the whole URL also works.
 
 ## Status
 
-See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) built, awaiting verification with a real token. Decisions: [docs/phase-1.md §31](docs/phase-1.md).
+See [docs/roadmap.md](docs/roadmap.md). Phase 1 (definition) ✅ · Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ · Next: Phase 5 (raw data processing). Decisions: [docs/phase-1.md §31](docs/phase-1.md).

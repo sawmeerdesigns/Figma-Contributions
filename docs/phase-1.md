@@ -1030,7 +1030,7 @@ If any answer is unclear:
 
 **Gate:** ✅ Passed. All §28 checklist items are complete.
 
-**Implementation:** In progress. Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) built, awaiting verification with a real token. See `roadmap.md` §17.
+**Implementation:** In progress. Phase 2 (Next.js foundation) ✅ · Phase 3 (configuration) ✅ · Phase 4 (Figma API client) ✅ (verified with a real token 2026-10-06). Next: Phase 5. See `roadmap.md` §17.
 
 ---
 

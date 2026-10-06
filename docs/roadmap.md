@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–19 complete · Live demo: https://figma-contributions.vercel.app · Next: Phase 20 (v1.0 release)  
+**Status:** ✅ v1.0.0 released (all 20 phases complete) · Live demo: https://figma-contributions.vercel.app  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1370,7 +1370,7 @@ Create a GitHub Release.
   - **Tests pass:** 47/47, plus CI green on Node 22.18.
   - **Demo works:** `DEMO_MODE=1` shows only demo data next to real data; live at https://figma-contributions.vercel.app.
   - Version set to `1.0.0` in `package.json` and `CHANGELOG.md`.
-- [ ] `v1.0.0` tagged and GitHub Release published
+- [x] `v1.0.0` tagged (1c4f572) and [GitHub Release](https://github.com/sawmeerdesigns/Figma-Contributions/releases/tag/v1.0.0) published 2026-10-07
 
 ---
 
@@ -1515,7 +1515,7 @@ Every phase produces something usable.
 [x] PHASE 17 — Documentation
 [x] PHASE 18 — Open Source Readiness
 [x] PHASE 19 — Public Demo
-[ ] PHASE 20 — Version 1.0 Release
+[x] PHASE 20 — Version 1.0 Release
 ```
 
 ---

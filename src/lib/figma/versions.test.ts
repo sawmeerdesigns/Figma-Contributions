@@ -1,24 +1,13 @@
 import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
-import { FigmaApiError, MAX_RETRIES, fetchCurrentUserId } from "./client.ts";
+import { FigmaApiError, MAX_RETRIES, fetchCurrentUserId, fetchFileName } from "./client.ts";
+import { stubFetch } from "./stubFetch.ts";
 import { fetchAllVersions } from "./versions.ts";
 
 const realFetch = globalThis.fetch;
 afterEach(() => {
   globalThis.fetch = realFetch;
 });
-
-function stubFetch(pages: Record<string, { status?: number; headers?: HeadersInit; body: unknown }>) {
-  const calls: { url: string; token: string | null }[] = [];
-  globalThis.fetch = (async (input: string | URL, init?: RequestInit) => {
-    const url = String(input);
-    calls.push({ url, token: new Headers(init?.headers).get("X-Figma-Token") });
-    const page = pages[url];
-    if (!page) throw new Error(`unexpected request: ${url}`);
-    return new Response(JSON.stringify(page.body), { status: page.status ?? 200, headers: page.headers });
-  }) as typeof fetch;
-  return calls;
-}
 
 const first = "https://api.figma.com/v1/files/KEY/versions?page_size=50";
 const second = "https://api.figma.com/v1/files/KEY/versions?page_size=50&before=2";
@@ -83,4 +72,55 @@ test("fetchCurrentUserId explains a missing current_user:read scope", async () =
   assert.equal(await fetchCurrentUserId("tok"), "u1");
   stubFetch({ [me]: { status: 403, body: { status: 403, err: "Invalid scope" } } });
   await assert.rejects(fetchCurrentUserId("tok"), /current_user:read/);
+});
+
+const isApiError = (status: number, pattern: RegExp) => (e: unknown) =>
+  e instanceof FigmaApiError && e.status === status && pattern.test(e.message);
+
+test("invalid and expired tokens say to regenerate, quoting Figma", async () => {
+  stubFetch({ [first]: { status: 401, body: { status: 401, err: "Invalid token" } } });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(401, /Figma said: "Invalid token".*expired/));
+  stubFetch({ [first]: { status: 403, body: { status: 403, err: "Token expired" } } });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(403, /Figma said: "Token expired"/));
+});
+
+test("server errors, network failures and non-JSON bodies become FigmaApiErrors", async () => {
+  stubFetch({ [first]: { status: 500, body: "<html>oops</html>", raw: true } });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(500, /Figma API error \(500\)\.$/));
+  stubFetch({ [first]: "network-error" });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(0, /Could not reach the Figma API/));
+  stubFetch({ [first]: { body: "not json", raw: true } });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(200, /isn't valid JSON/));
+});
+
+test("waits out a short rate limit, then succeeds", async () => {
+  const calls = stubFetch({
+    [first]: [
+      { status: 429, headers: { "retry-after": "0.001" }, body: {} },
+      { body: { versions: [{ id: "1" }] } },
+    ],
+  });
+  assert.deepEqual((await fetchAllVersions("KEY", "tok")).map((v) => v.id), ["1"]);
+  assert.equal(calls.length, 2);
+});
+
+test("a long rate limit is reported, not waited out", async () => {
+  const calls = stubFetch({ [first]: { status: 429, headers: { "retry-after": "3600" }, body: {} } });
+  await assert.rejects(fetchAllVersions("KEY", "tok"), isApiError(429, /in about 60 minute/));
+  assert.equal(calls.length, 1);
+});
+
+test("empty history and missing fields give no versions", async () => {
+  stubFetch({ [first]: { body: { versions: [] } } });
+  assert.deepEqual(await fetchAllVersions("KEY", "tok"), []);
+  stubFetch({ [first]: { body: {} } });
+  assert.deepEqual(await fetchAllVersions("KEY", "tok"), []);
+});
+
+test("fetchFileName returns the name, or null on any Figma error", async () => {
+  const meta = "https://api.figma.com/v1/files/KEY/meta";
+  stubFetch({ [meta]: { body: { file: { name: "Portfolio" } } } });
+  assert.equal(await fetchFileName("KEY", "tok"), "Portfolio");
+  stubFetch({ [meta]: { status: 403, body: { status: 403, err: "Invalid scope" } } });
+  assert.equal(await fetchFileName("KEY", "tok"), null);
 });

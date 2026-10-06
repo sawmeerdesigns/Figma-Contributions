@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { formatCount } from "@/components/ui";
 import type { Level } from "@/lib/contributions/calculate";
 import type { ContributionDay, YearCalendar } from "@/lib/contributions/calendar";
 
@@ -25,7 +26,7 @@ export function describeDay({ date, count }: ContributionDay) {
     year: "numeric",
     timeZone: "UTC",
   });
-  return `${count === 0 ? "No" : count} version${count === 1 ? "" : "s"} on ${when}`;
+  return `${count === 0 ? "No" : formatCount(count)} version${count === 1 ? "" : "s"} on ${when}`;
 }
 
 function Cell({ level }: { level: Level }) {

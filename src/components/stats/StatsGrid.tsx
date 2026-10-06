@@ -1,11 +1,11 @@
-import { card } from "@/components/ui";
+import { card, formatCount } from "@/components/ui";
 import type { ContributionStats } from "@/lib/contributions/calculate";
 
 const formatDate = (date: string) =>
   new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" });
 const formatMonth = (month: string) =>
   new Date(`${month}-01T00:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const plural = (n: number, word: string) => `${formatCount(n)} ${word}${n === 1 ? "" : "s"}`;
 
 function StatCard({ value, label, detail }: { value: string | number; label: string; detail?: string }) {
   return (
@@ -25,10 +25,10 @@ export function StatsGrid({ stats, currentStreak, year }: { stats: ContributionS
     <div className="@container">
       <h2 className="sr-only">Statistics for {year}</h2>
       <dl aria-label={`Statistics for ${year}`} className="grid grid-cols-2 gap-3 @lg:grid-cols-3">
-        <StatCard value={stats.total} label="Contributions" detail={`in ${year}`} />
-        <StatCard value={stats.activeDays} label="Active days" detail={`in ${year}`} />
-        <StatCard value={currentStreak} label="Current streak" detail="days, as of today (UTC)" />
-        <StatCard value={stats.longestStreak} label="Longest streak" detail={`days in ${year}`} />
+        <StatCard value={formatCount(stats.total)} label="Contributions" detail={`in ${year}`} />
+        <StatCard value={formatCount(stats.activeDays)} label="Active days" detail={`in ${year}`} />
+        <StatCard value={formatCount(currentStreak)} label="Current streak" detail="days, as of today (UTC)" />
+        <StatCard value={formatCount(stats.longestStreak)} label="Longest streak" detail={`days in ${year}`} />
         <StatCard
           value={mostActiveDay ? formatDate(mostActiveDay.date) : "—"}
           label="Most active day"

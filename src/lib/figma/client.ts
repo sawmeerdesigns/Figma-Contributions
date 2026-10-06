@@ -38,7 +38,13 @@ export async function figmaGet<T>(url: string, token: string): Promise<T> {
       throw new FigmaApiError(0, "Could not reach the Figma API. Check your internet connection.");
     }
 
-    if (res.ok) return (await res.json()) as T;
+    if (res.ok) {
+      try {
+        return (await res.json()) as T;
+      } catch {
+        throw new FigmaApiError(res.status, "Figma sent a response that isn't valid JSON. Please try again later.");
+      }
+    }
 
     if (res.status === 429) {
       const wait = Number(res.headers.get("retry-after")) || 0;

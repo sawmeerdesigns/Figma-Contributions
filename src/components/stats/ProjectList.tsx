@@ -1,4 +1,4 @@
-import { card } from "@/components/ui";
+import { card, formatCount } from "@/components/ui";
 import type { ProjectTotal } from "@/lib/contributions/calculate";
 
 export function ProjectList({ projects, year }: { projects: ProjectTotal[]; year: number }) {
@@ -17,7 +17,7 @@ export function ProjectList({ projects, year }: { projects: ProjectTotal[]; year
                 {p.name}
               </span>
               <span className="tabular-nums text-muted">
-                {p.count} <span className="sr-only">versions</span>
+                {formatCount(p.count)} <span className="sr-only">versions</span>
               </span>
             </div>
             <div aria-hidden className="h-1.5 rounded-full bg-(--level-0)">

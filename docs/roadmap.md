@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–14 complete · Next: Phase 15 (testing & reliability)  
+**Status:** Phases 1–15 complete · Next: Phase 16 (sync optimization)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1198,6 +1198,13 @@ Test the data pipeline.
 - Tablet
 - Desktop
 
+- [x] Done 2026-10-06. 42 tests (`npm test`), run in CI on every push/PR (`.github/workflows/ci.yml`: test, typecheck, lint, build; no token needed).
+  - **API** (`versions.test.ts`, stubbed fetch via `stubFetch.ts`): valid token + pagination, invalid token (401), expired token (403 "Token expired"), missing scope, invalid file (404), server error (500), network failure, non-JSON body, empty history and missing fields, rate limit: immediate, retry-then-success, retry cap, long wait reported.
+  - **Data**: duplicates across pages and duplicate file entries, many versions per day, other years, leap years (incl. impossible dates like 2026-02-29), time-zone offsets, the Dec 31 / Jan 1 boundary.
+  - **Sync pipeline** (`src/lib/sync.ts`, `sync.test.ts`): only the user's versions kept, versions without a user dropped, per-file names (Figma → URL → key), empty files, a failing file fails the whole sync with its key in the message.
+  - **UI** (browser, synthetic data: 70,109 versions over 2024–2026, 12 projects, very long names): no overflow or clipped cards at 390 / 768 / 1512px, 366-day leap year, empty data, no console errors. No automated UI tests (Node can't run JSX without adding a test framework).
+  - **Bugs fixed:** impossible dates were silently moved to the next month by `Date.parse`; a non-JSON Figma response crashed sync with "Unexpected error"; an interrupted sync could leave a half-written data file (now write-then-rename). Numbers now use thousands separators.
+
 ---
 
 # PHASE 16 — Sync Optimization
@@ -1480,7 +1487,7 @@ Every phase produces something usable.
 [x] PHASE 12 — Project Analytics
 [x] PHASE 13 — UX & Visual Polish
 [x] PHASE 14 — Accessibility
-[ ] PHASE 15 — Testing & Reliability
+[x] PHASE 15 — Testing & Reliability
 [ ] PHASE 16 — Sync Optimization
 [ ] PHASE 17 — Documentation
 [ ] PHASE 18 — Open Source Readiness

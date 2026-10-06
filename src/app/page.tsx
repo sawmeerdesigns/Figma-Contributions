@@ -5,7 +5,7 @@ import { ContributionGraph, ContributionLegend } from "@/components/contribution
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProjectList } from "@/components/stats/ProjectList";
 import { StatsGrid } from "@/components/stats/StatsGrid";
-import { card } from "@/components/ui";
+import { card, formatCount } from "@/components/ui";
 import { calculateStats, rankProjects } from "@/lib/contributions/calculate";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
 import { sumDays, type ContributionData } from "@/lib/contributions/normalize";
@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <div className={`${card} flex flex-col gap-3 p-4 sm:p-5`}>
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 id="graph-title" className="font-medium">
-              <span className="tabular-nums">{total}</span> version{total === 1 ? "" : "s"} in {year}
+              <span className="tabular-nums">{formatCount(total)}</span> version{total === 1 ? "" : "s"} in {year}
             </h2>
             {years.length > 1 && (
               <nav aria-label="Year" className="flex gap-1 text-sm">

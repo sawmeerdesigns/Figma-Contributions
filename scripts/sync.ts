@@ -1,14 +1,13 @@
 // Run with `npm run sync`. Node loads .env.local via --env-file-if-exists; this script
 // is the only place the token is read, so it never reaches the Next.js client bundle.
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rename, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { calculateStats } from "../src/lib/contributions/calculate.ts";
-import { countByDay, sumDays, type ContributionData } from "../src/lib/contributions/normalize.ts";
-import { FigmaApiError, fetchCurrentUserId, fetchFileName } from "../src/lib/figma/client.ts";
+import { sumDays, type ContributionData } from "../src/lib/contributions/normalize.ts";
+import { FigmaApiError, fetchCurrentUserId } from "../src/lib/figma/client.ts";
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
-import type { FigmaVersion } from "../src/lib/figma/types.ts";
-import { fetchAllVersions } from "../src/lib/figma/versions.ts";
+import { collectContributions } from "../src/lib/sync.ts";
 
 function fail(message: string): never {
   console.error(`\n✗ ${message}\n`);
@@ -51,25 +50,17 @@ try {
 console.log("✓ Authentication successful");
 
 console.log("\nFetching version history (your versions / all versions)...");
-const data: ContributionData = { files: [] };
 let mine = 0;
 let exactNames = 0;
-// ponytail: sequential to stay under Figma's rate limits; parallelize with a small pool if many files make sync slow.
-for (const { key, name: urlName } of fileKeys) {
-  let versions: FigmaVersion[];
-  try {
-    versions = await fetchAllVersions(key, token);
-  } catch (error) {
-    fail(`File ${key}: ${errorMessage(error)}`);
-  }
-  // Name: Figma's current name (needs file_metadata:read), else the pasted URL's slug, else the key.
-  const figmaName = await fetchFileName(key, token);
-  if (figmaName) exactNames++;
-  const name = figmaName ?? urlName ?? key;
-  const own = versions.filter((v) => v.user?.id === userId);
-  mine += own.length;
-  data.files.push({ key, name, days: countByDay(own) });
-  console.log(`✓ ${name} (${key}): ${own.length} / ${versions.length}`);
+let data: ContributionData;
+try {
+  data = await collectContributions(fileKeys, userId, token, ({ key, name, own, all, exactName }) => {
+    mine += own;
+    if (exactName) exactNames++;
+    console.log(`✓ ${name} (${key}): ${own} / ${all}`);
+  });
+} catch (error) {
+  fail(errorMessage(error));
 }
 if (exactNames < fileKeys.length) {
   console.log("  Names come from your file URLs. Add the file_metadata:read scope to your token for Figma's current names.");
@@ -84,7 +75,9 @@ console.log("✓ Activity processed");
 const outFile = fileURLToPath(new URL("../data/contributions.json", import.meta.url));
 try {
   await mkdir(fileURLToPath(new URL("../data/", import.meta.url)), { recursive: true });
-  await writeFile(outFile, `${JSON.stringify(data, null, 2)}\n`);
+  // Write then rename, so an interrupted sync never leaves a half-written file for the app to read.
+  await writeFile(`${outFile}.tmp`, `${JSON.stringify(data, null, 2)}\n`);
+  await rename(`${outFile}.tmp`, outFile);
 } catch (error) {
   fail(`Could not write ${outFile}: ${(error as Error).message}`);
 }

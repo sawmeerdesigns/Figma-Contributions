@@ -30,6 +30,7 @@ coverage/
 
 # real synced Figma data (demo data is committed separately)
 data/contributions.json
+data/contributions.json.tmp
 *.pem
 .pnp
 .pnp.*

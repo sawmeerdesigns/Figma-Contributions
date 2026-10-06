@@ -14,11 +14,11 @@ Everything so far; the first release will be `0.1.0`.
 - **Stats:** contributions, active days, current and longest streak, most active day and month.
 - **Most active projects:** versions per file for the selected year. File names come from Figma (with the optional `file_metadata:read` scope) or the pasted URL.
 - **Year navigation** for any year from the first synced year to now, including empty years.
-- **Demo mode:** committed, made-up `data/demo.json`, shown when there's no synced data.
+- **Demo mode:** committed, made-up `data/demo.json`, shown when there's no synced data, with dates shifted so the latest day is today. Public deployments always show it ([live demo](https://figma-contributions.vercel.app)).
 - **Design:** dark and light themes, card layout, logo and favicon, loading and error states.
 - **Accessibility:** a keyboard-navigable grid (arrows, Home/End, Ctrl+Home/End), accessible names for every day, a hoverable tooltip dismissable with Escape, reduced-motion and forced-colors support, and a WCAG AA contrast test.
 - **Reliability:** API errors explained (invalid or expired token, missing scope, 404, 5xx, network, invalid response), short rate limits retried up to 3 times, a 30-second request timeout, and atomic data writes.
-- **Tests and CI:** 45 tests with Node's test runner (Figma API stubbed). GitHub Actions runs test, typecheck, lint and build.
+- **Tests and CI:** 47 tests with Node's test runner (Figma API stubbed). GitHub Actions runs test, typecheck, lint and build.
 - **Docs:** README (setup, token and file key setup, syncing, troubleshooting, privacy), roadmap and project decisions.
 - **Open source:** MIT license, contributing guide, code of conduct, security policy and this changelog.
 

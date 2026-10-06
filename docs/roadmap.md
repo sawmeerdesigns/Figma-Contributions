@@ -2,7 +2,7 @@
 
 > An open-source, local-first GitHub-style contribution graph for Figma designers.
 
-**Status:** Phases 1–18 complete · Next: Phase 19 (public demo)  
+**Status:** Phases 1–19 complete · Live demo: https://figma-contributions.vercel.app · Next: Phase 20 (v1.0 release)  
 **Project type:** Open-source developer tool  
 **Primary goal:** Let anyone clone the repository, connect their own Figma account/data locally, and generate a GitHub-style contribution heatmap from their Figma design activity.
 
@@ -1325,7 +1325,7 @@ User's Figma data
 This keeps the project privacy-friendly.
 
 - [x] Code ready 2026-10-07: the page forces demo data on Vercel (`VERCEL=1`) or with `DEMO_MODE=1`, even if a real data file is present; demo dates shift so the latest day is today (`src/lib/contributions/demo.ts`, tested to stay live through 2030); the demo banner links to the repository; `.vercelignore` excludes `.env*` and real data from CLI deploys. Verified with a production build started with `VERCEL=1` next to real data: only demo projects rendered, and no real file names or keys appear in the build output.
-- [ ] Deployed via the Vercel GitHub integration and the live URL checked (demo banner shown, no real data)
+- [x] Live 2026-10-07 at https://figma-contributions.vercel.app (Vercel GitHub integration, auto-deploys from `main`). Checked: public demo banner with the GitHub link, only demo projects, no real file names or keys in the HTML, today has activity, `/.env`, `/.env.local`, `/data/contributions.json` and `/data/demo.json` all 404, no console errors.
 
 ---
 
@@ -1500,7 +1500,7 @@ Every phase produces something usable.
 [x] PHASE 16 — Sync Optimization
 [x] PHASE 17 — Documentation
 [x] PHASE 18 — Open Source Readiness
-[ ] PHASE 19 — Public Demo
+[x] PHASE 19 — Public Demo
 [ ] PHASE 20 — Version 1.0 Release
 ```
 

@@ -4,6 +4,8 @@ GitHub's contribution graph, for Figma. A local-first, open-source app that turn
 
 > Measures Figma **activity**, not productivity. 10 versions ≠ 10 hours of work.
 
+**[Live demo →](https://figma-contributions.vercel.app)** (made-up data; run it locally to see your own)
+
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light.png">
   <img alt="Heatmap of a year of Figma versions with stats: 875 contributions, 157 active days, longest streak 10 days" src="docs/screenshots/dark.png">
@@ -183,7 +185,7 @@ Thresholds live in `getLevel` (`src/lib/contributions/calculate.ts`). They're ap
 
 ## Deploying a public demo
 
-A deployment shows **only the demo data**, never your token or real activity:
+The [public demo](https://figma-contributions.vercel.app) runs on Vercel. A deployment shows **only the demo data**, never your token or real activity:
 
 - **On Vercel, the page forces demo mode** (`VERCEL=1`), even if a real data file were uploaded. Set `DEMO_MODE=1` to force it on any other host.
 - **Nothing private is in the repo.** `.env.local` and `data/contributions.json` are gitignored, and `.vercelignore` keeps them out of CLI deploys too.

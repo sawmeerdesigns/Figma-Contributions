@@ -1,4 +1,4 @@
-// Run with `npm run sync`. Node loads .env.local via --env-file-if-exists; this script
+// Run with `npm run sync` (`-- --full` to rebuild, `-- --redact` to hide file names and keys in the output). Node loads .env.local via --env-file-if-exists; this script
 // is the only place the token is read, so it never reaches the Next.js client bundle.
 
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
@@ -9,8 +9,14 @@ import { FigmaApiError, fetchCurrentUserId, requestCount } from "../src/lib/figm
 import { parseFileKeys } from "../src/lib/figma/fileKeys.ts";
 import { collectContributions } from "../src/lib/sync.ts";
 
+// --redact: print "File #1", "File #2" instead of file names and keys, for logs others can read
+// (GitHub Actions logs are public on public repositories).
+const REDACT = process.argv.includes("--redact");
+let knownKeys: string[] = [];
+const scrub = (text: string) => (REDACT ? knownKeys.reduce((t, key, i) => t.replaceAll(key, `#${i + 1}`), text) : text);
+
 function fail(message: string): never {
-  console.error(`\n✗ ${message}\n`);
+  console.error(`\n✗ ${scrub(message)}\n`);
   process.exit(1);
 }
 
@@ -33,7 +39,7 @@ function loadConfig() {
   try {
     return { token, fileKeys: parseFileKeys(rawFileKeys) };
   } catch (error) {
-    fail(`FIGMA_FILE_KEYS: ${(error as Error).message}`);
+    fail(REDACT ? "FIGMA_FILE_KEYS has an entry that isn't a Figma file key or file URL." : `FIGMA_FILE_KEYS: ${(error as Error).message}`);
   }
 }
 
@@ -52,6 +58,7 @@ async function loadPrevious(): Promise<ContributionData | undefined> {
 
 console.log("Figma Contributions Sync\n");
 const { token, fileKeys } = loadConfig();
+knownKeys = fileKeys.map((f) => f.key);
 console.log(`✓ Configuration loaded (${fileKeys.length} file${fileKeys.length === 1 ? "" : "s"})`);
 
 let userId: string;
@@ -74,7 +81,7 @@ try {
     skipped += bad;
     if (exactName) exactNames++;
     const what = mode === "full" ? `${own} / ${fetched} (full history)` : `+${own} / ${fetched} new`;
-    console.log(`✓ ${name} (${key}): ${what}`);
+    console.log(`✓ ${REDACT ? `File #${knownKeys.indexOf(key) + 1}` : `${name} (${key})`}: ${what}`);
   });
 } catch (error) {
   fail(errorMessage(error));

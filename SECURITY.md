@@ -27,7 +27,8 @@ Out of scope: vulnerabilities in Figma's own API or in dependencies with no impa
 
 ## Keeping your token safe
 
-- Keep it in `.env.local` only. That file is gitignored; never commit it or paste it into issues.
+- Keep it only in `.env.local` (gitignored) and, if you use the auto-updating calendar, in GitHub repository secrets. Never commit it or paste it into issues.
 - Give it only the scopes listed in the [README](README.md#figma-token-setup). All of them are read-only.
 - Never rename the variables with a `NEXT_PUBLIC_` prefix: Next.js would ship the token to every visitor.
+- Using the auto-updating calendar? Keep the token in **repository secrets** only, never in the workflow file. The workflow syncs with `--redact`, so public Actions logs show no file names or keys.
 - If a token might be exposed, revoke it in Figma (**Settings → Security → Personal access tokens**) and generate a new one.

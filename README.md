@@ -212,6 +212,8 @@ Then add it wherever images go:
 <img src="figma-contributions.svg" alt="My Figma activity in 2026" style="max-width: 100%; height: auto" />
 ```
 
+**Want it to update itself?** Turn on the included GitHub Action: add your token and file list as repository secrets, and it publishes a fresh calendar every day at a fixed image URL. See [Auto-update with GitHub Actions](docs/embedding.md#auto-update-with-github-actions).
+
 The export holds only daily counts, with no file names or keys. **[The embed guide](docs/embedding.md)** has step-by-step instructions for websites, Next.js, GitHub profile READMEs, Figma, Framer, Webflow and Notion, plus all options, how to keep the image up to date, and exactly what you're publishing.
 
 ## Development
@@ -223,10 +225,10 @@ The export holds only daily counts, with no file names or keys. **[The embed gui
 | `npm run typecheck` | Generates Next.js route types, then runs `tsc` |
 | `npm run lint` | ESLint |
 | `npm run build` / `npm start` | Production build and server |
-| `npm run sync` | Sync with Figma (needs `.env.local`) |
+| `npm run sync` | Sync with Figma (needs `.env.local`). `-- --full` rebuilds; `-- --redact` hides file names and keys in the output |
 | `npm run export` | Save the calendar as an SVG ([options](docs/embedding.md#options)) |
 
-- **CI** (`.github/workflows/ci.yml`) runs test, typecheck, lint and build on every push and pull request.
+- **CI** (`.github/workflows/ci.yml`) runs test, typecheck, lint and build on every push and pull request. `.github/workflows/calendar.yml` publishes the daily calendar images, but only when the repository has the Figma secrets.
 - **Demo mode:** with no `data/contributions.json`, the page uses `data/demo.json`. To see the demo with your file in place, run `DEMO_MODE=1 npm run dev`.
 - **Next.js version:** the project uses Next.js 16, whose APIs differ from older versions. See [AGENTS.md](AGENTS.md).
 - **Tests sit next to the code they cover** (`*.test.ts`). The contrast test (`src/app/contrast.test.ts`) fails if a theme color drops below WCAG AA.

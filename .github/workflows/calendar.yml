@@ -1,0 +1,77 @@
+# Keeps an always-current calendar image for portfolios (docs/embedding.md#auto-update-with-github-actions).
+# Daily: sync with Figma using this repository's secrets, export the SVGs, and publish them to the
+# `calendar` branch, replaced each run so it holds one commit. Only the images are ever published.
+#
+# Setup: add FIGMA_ACCESS_TOKEN and FIGMA_FILE_KEYS as repository secrets. Without them, it skips.
+name: Calendar
+
+on:
+  schedule:
+    - cron: "17 4 * * *" # daily at 04:17 UTC (off the hour, when GitHub's scheduler is busiest)
+  workflow_dispatch: # "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write # to push the calendar branch
+
+concurrency:
+  group: calendar
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+      FIGMA_FILE_KEYS: ${{ secrets.FIGMA_FILE_KEYS }}
+    steps:
+      - name: Check secrets
+        id: secrets
+        run: |
+          if [ -z "$FIGMA_ACCESS_TOKEN" ] || [ -z "$FIGMA_FILE_KEYS" ]; then
+            echo "::notice::Add the FIGMA_ACCESS_TOKEN and FIGMA_FILE_KEYS repository secrets to publish your calendar. Skipping."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.secrets.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.secrets.outputs.ready == 'true'
+        with:
+          node-version: "22.18"
+          cache: npm
+
+      - if: steps.secrets.outputs.ready == 'true'
+        run: npm ci
+
+      # --redact: Actions logs are public on public repositories, so no file names or keys in them.
+      # Each run starts fresh, so this is a full sync. data/contributions.json is deliberately not
+      # cached: caches can be read by pull-request workflows, and it holds file names and keys.
+      - name: Sync with Figma
+        if: steps.secrets.outputs.ready == 'true'
+        run: npm run sync -- --redact
+
+      - name: Export the calendar
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          out="$RUNNER_TEMP/calendar"
+          mkdir -p "$out"
+          npm run export -- --out "$out/figma-contributions.svg"
+          npm run export -- --theme light --out "$out/figma-contributions-light.svg"
+          npm run export -- --theme dark --out "$out/figma-contributions-dark.svg"
+
+      - name: Publish to the calendar branch
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/calendar"
+          git init -q -b calendar
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Update Figma calendar ($(date -u +%F))"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" calendar
+          echo "::notice::Published https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/calendar/figma-contributions.svg"

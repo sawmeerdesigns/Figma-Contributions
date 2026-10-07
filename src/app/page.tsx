@@ -5,7 +5,7 @@ import { ContributionGraph, ContributionLegend } from "@/components/contribution
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProjectList } from "@/components/stats/ProjectList";
 import { StatsGrid } from "@/components/stats/StatsGrid";
-import { InfoIcon } from "@/components/icons";
+import { SiteFooter } from "@/components/SiteFooter";
 import { card, formatCount, page } from "@/components/ui";
 import { calculateStats, rankProjects } from "@/lib/contributions/calculate";
 import { shiftToToday } from "@/lib/contributions/demo";
@@ -14,7 +14,6 @@ import { sumDays, type ContributionData } from "@/lib/contributions/normalize";
 import { resolveYear } from "@/lib/contributions/years";
 import demo from "../../data/demo.json";
 
-const REPO = "https://github.com/sawmeerdesigns/Figma-Contributions";
 // Public deployments only ever show demo data (roadmap Phase 19), even if a real data file was uploaded.
 const DEMO_ONLY = process.env.VERCEL === "1" || process.env.DEMO_MODE === "1";
 
@@ -53,41 +52,20 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     <main className={page}>
       <SiteHeader />
 
-      {isDemo && (
-        // Alert · Banner, Info tone
-        <div
-          role="status"
-          className="flex w-fit max-w-full items-start gap-2 rounded-lg border border-info-border bg-info-surface px-3 py-2 text-body-2"
-        >
-          <InfoIcon className="text-info-icon" />
-          <p>
-            <span className="font-semibold text-info-text">Demo with made-up data.</span>{" "}
-            {DEMO_ONLY ? (
-              <>
-                Run it locally to see your own Figma activity:{" "}
-                <a
-                  href={REPO}
-                  className="rounded-sm font-medium text-link underline underline-offset-2 transition-colors hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-                >
-                  get it on GitHub
-                </a>
-                .
-              </>
-            ) : (
-              <>
-                Run <code className="font-mono text-code-2">npm run sync</code> to see your own.
-              </>
-            )}
-          </p>
-        </div>
-      )}
-
       <section aria-labelledby="graph-title" className="flex w-fit max-w-full flex-col gap-4">
         <div className={`${card} flex flex-col gap-4 p-4 sm:p-6`}>
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="graph-title" className="text-heading-4">
-              <span className="tabular-nums">{formatCount(total)}</span> version{total === 1 ? "" : "s"} in {year}
-            </h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 id="graph-title" className="text-heading-4">
+                <span className="tabular-nums">{formatCount(total)}</span> version{total === 1 ? "" : "s"} in {year}
+              </h2>
+              {/* Tag, Info tone: keeps "made up" visible up top; the full note is in the footer. */}
+              {isDemo && (
+                <span className="rounded-full border border-info-border bg-info-surface px-2 py-0.5 text-label-3 text-info-text">
+                  Demo data
+                </span>
+              )}
+            </div>
             {years.length > 1 && (
               <nav aria-label="Year" className="flex gap-1">
                 {years.map((y) => (
@@ -124,6 +102,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
         <ProjectList projects={projects} year={year} />
       </section>
+
+      <SiteFooter isDemo={isDemo} demoOnly={DEMO_ONLY} />
     </main>
   );
 }

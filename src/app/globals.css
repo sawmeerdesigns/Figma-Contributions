@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
+/* dark: utilities follow the theme toggle, not only the system setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /*
   Theme from Sameer's Design System (design.md): antique gold on warm neutrals, Light and Dark.
   Each variable names the Mapped token it carries. Light first, Dark below.
 */
 :root {
+  color-scheme: light;
   --background: #faf9f7; /* Surface/Primary */
   --surface: #ffffff; /* Surface/Raised */
   --surface-hover: #f5f3ef; /* Surface/Primary/Hover */
@@ -43,41 +47,42 @@
   --card-shadow: 0 1px 2px rgb(182 143 57 / 0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #121110;
-    --surface: #1e1b19;
-    --surface-hover: #35312d;
-    --surface-sunken: #121110;
-    --line: #514b44;
-    --foreground: #faf9f7;
-    --secondary: #ded9d0;
-    --muted: #c7c0b5;
-    --brand: #e4b64e;
-    --brand-hover: #c9a24b;
-    --brand-pressed: #b68f39;
-    --on-brand: #121110;
-    --brand-text: #c9a24b;
-    --link: #e4b64e;
-    --focus: #c9a24b;
-    --inverse: #faf9f7;
-    --on-inverse: #121110;
-    --info-surface: #102a35;
-    --info-text: #8fc5d5;
-    --info-icon: #63abc1;
-    --info-border: #204c5d;
-    --error-surface: #381512;
-    --error-text: #e47a73;
-    --error-icon: #e47a73;
-    --error-border: #732723;
-    --level-0: #35312d; /* Surface/Tertiary */
-    --level-1: #57400f; /* Brand/900 */
-    --level-2: #9a7628; /* Brand/700 */
-    --level-3: #c9a24b; /* Brand/500 */
-    --level-4: #f1cc70; /* Brand/300 */
-    /* Dark separates Surface/Raised by lightness; no shadow. */
-    --card-shadow: none;
-  }
+/* Dark. The theme is chosen by data-theme on <html>: set before first paint from the saved
+   choice or the system setting (layout.tsx), and switched by the theme toggle. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #121110;
+  --surface: #1e1b19;
+  --surface-hover: #35312d;
+  --surface-sunken: #121110;
+  --line: #514b44;
+  --foreground: #faf9f7;
+  --secondary: #ded9d0;
+  --muted: #c7c0b5;
+  --brand: #e4b64e;
+  --brand-hover: #c9a24b;
+  --brand-pressed: #b68f39;
+  --on-brand: #121110;
+  --brand-text: #c9a24b;
+  --link: #e4b64e;
+  --focus: #c9a24b;
+  --inverse: #faf9f7;
+  --on-inverse: #121110;
+  --info-surface: #102a35;
+  --info-text: #8fc5d5;
+  --info-icon: #63abc1;
+  --info-border: #204c5d;
+  --error-surface: #381512;
+  --error-text: #e47a73;
+  --error-icon: #e47a73;
+  --error-border: #732723;
+  --level-0: #35312d; /* Surface/Tertiary */
+  --level-1: #57400f; /* Brand/900 */
+  --level-2: #9a7628; /* Brand/700 */
+  --level-3: #c9a24b; /* Brand/500 */
+  --level-4: #f1cc70; /* Brand/300 */
+  /* Dark separates Surface/Raised by lightness; no shadow. */
+  --card-shadow: none;
 }
 
 @theme inline {

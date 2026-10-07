@@ -26,7 +26,8 @@ Developers get a picture of their work over time for free on GitHub. Designers d
 - **Most active projects:** versions per file for the selected year.
 - **Year navigation:** any year from your first synced year to now, including empty ones.
 - **Fast re-syncs:** after the first sync, only new versions are fetched, usually one request per file.
-- **Dark and light themes**, responsive down to 320px, keyboard and screen reader accessible.
+- **Dark and light themes** with a toggle in the header. It follows your system setting until you choose, then remembers the choice.
+- **Responsive** down to 320px, keyboard and screen reader accessible.
 - **Demo mode:** with no synced data, the app shows made-up data, shifted so the latest day is always today. A public deployment always shows the demo.
 
 ## Architecture
@@ -56,7 +57,7 @@ npm run sync                                   npm run dev / build
 | `src/lib/figma/` | Figma API client (errors, retries, rate limits), version paging, file key/URL parsing |
 | `src/lib/contributions/` | Daily counts, levels, stats, project ranking, year calendar, year selection |
 | `src/app/` | The page, loading and error states, theme (`globals.css`) |
-| `src/components/` | Heatmap, stats, projects list, header |
+| `src/components/` | Heatmap, stats, projects list, header with theme toggle, footer |
 | `data/demo.json` | Made-up demo data (committed) |
 | `docs/` | [Roadmap](docs/roadmap.md) and [project definition and decisions](docs/phase-1.md#31-phase-1-decisions-resolved-gaps) |
 

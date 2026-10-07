@@ -1,3 +1,5 @@
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 // A 3×3 mini heatmap as the mark; the same shape is the favicon (app/icon.svg).
 const MARK = [1, 3, 2, 4, 2, 0, 2, 4, 3];
 
@@ -9,10 +11,11 @@ export function SiteHeader() {
           <rect key={i} x={(i % 3) * 12} y={Math.floor(i / 3) * 12} width="10" height="10" rx="2.5" fill={`var(--level-${level})`} />
         ))}
       </svg>
-      <div className="flex flex-col">
+      <div className="flex min-w-0 flex-1 flex-col">
         <h1 className="text-heading-1">Figma Contributions</h1>
         <p className="text-body-2 text-secondary">Figma activity, not productivity. Each saved version counts once.</p>
       </div>
+      <ThemeToggle />
     </header>
   );
 }

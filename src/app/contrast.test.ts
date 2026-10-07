@@ -10,7 +10,7 @@ const css = readFileSync(new URL("./globals.css", import.meta.url), "utf8");
 const tokens = (block: string) =>
   Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
 const light = tokens(css.match(/:root \{([^}]*)\}/)![1]);
-const dark = { ...light, ...tokens(css.match(/prefers-color-scheme: dark\) \{\s*:root \{([^}]*)\}/)![1]) };
+const dark = { ...light, ...tokens(css.match(/:root\[data-theme="dark"\] \{([^}]*)\}/)![1]) };
 
 function luminance(hex: string) {
   const [r, g, b] = [1, 3, 5].map((i) => {

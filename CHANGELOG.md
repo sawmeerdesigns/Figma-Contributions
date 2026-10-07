@@ -4,11 +4,16 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Added
+
+- **Light/dark toggle** in the header (Icon Button, 40×40 target). It follows the system setting until clicked, then remembers the choice (`localStorage`). A small script applies the theme before first paint, so there's no flash, and the toggle exposes its state with `aria-pressed`.
+- **Footer** with "Made by sawmeerdesigns", a "Get it now on GitHub" button and the demo notice, which moved here from the top of the page. A "Demo data" tag next to the graph title keeps it clear the data is made up.
+
 ### Changed
 
 - **New look from Sameer's Design System:** antique gold on warm neutrals in Light and Dark, Manrope and Roboto Mono, and a 1200px container with the system's margins and section spacing. Every colour maps to a Mapped token (`src/app/globals.css` names each one).
 - **Heatmap:** a gold ramp from the Brand primitives, since the system has no sequential Data token. Cells are 12px, 4px apart.
-- **Components:** the demo banner is an Info Alert with an icon, and the error page an Error Alert card. Year tabs and Try again use gold with the `Text/Button/Primary` label (white on gold fails contrast). The tooltip uses the inverse surface; focus rings use `Border/Focus`.
+- **Components:** the demo notice uses the Info tone with an icon, and the error page is an Error Alert card. Year tabs and Try again use gold with the `Text/Button/Primary` label (white on gold fails contrast). The tooltip uses the inverse surface; focus rings use `Border/Focus`.
 - **Stat cards** follow Metric Content (label, value, detail) and lost their misleading hover state.
 - **Mobile:** year tabs have a 40px tap target.
 - **Contrast test** covers the new token pairs, status alerts included.

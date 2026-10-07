@@ -7,7 +7,7 @@ All notable changes to this project are documented here. The format follows [Kee
 ### Added
 
 - **Light/dark toggle** in the header (Icon Button, 40×40 target). It follows the system setting until clicked, then remembers the choice (`localStorage`). A small script applies the theme before first paint, so there's no flash, and the toggle exposes its state with `aria-pressed`.
-- **Footer** with "Made by sawmeerdesigns", a "Get it now on GitHub" button and the demo notice, which moved here from the top of the page. A "Demo data" tag next to the graph title keeps it clear the data is made up.
+- **Footer** with "Made by sawmeerdesigns", a bold "Get it now on GitHub" link and the demo notice, which moved here from the top of the page. A "Demo data" tag next to the graph title keeps it clear the data is made up.
 
 ### Changed
 

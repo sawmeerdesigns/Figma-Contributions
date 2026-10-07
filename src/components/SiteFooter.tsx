@@ -39,10 +39,10 @@ export function SiteFooter({ isDemo, demoOnly }: { isDemo: boolean; demoOnly: bo
             sawmeerdesigns
           </a>
         </p>
-        {/* Button: Brand, Filled, Medium. The page's one primary action. */}
+        {/* Link, bold. min-h-10 keeps a 40px tap target (design.md Target sizes). */}
         <a
           href={REPO}
-          className="flex h-10 items-center rounded-lg bg-brand px-4 text-label-1 text-on-brand transition-colors hover:bg-brand-hover active:bg-brand-pressed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="flex min-h-10 items-center rounded-sm text-label-1 font-bold text-link underline underline-offset-2 transition-colors hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
           Get it now on GitHub
         </a>

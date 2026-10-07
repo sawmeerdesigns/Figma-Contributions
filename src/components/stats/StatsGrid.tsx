@@ -7,12 +7,13 @@ const formatMonth = (month: string) =>
   new Date(`${month}-01T00:00:00Z`).toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
 const plural = (n: number, word: string) => `${formatCount(n)} ${word}${n === 1 ? "" : "s"}`;
 
+// Metric Card / Metric Content order: label, headline value, then a detail line. Not interactive, so no hover state.
 function StatCard({ value, label, detail }: { value: string | number; label: string; detail?: string }) {
   return (
-    <div className={`${card} flex flex-col gap-0.5 px-4 py-3 transition-colors hover:border-brand/50`}>
-      <dt className="order-2 text-sm text-muted">{label}</dt>
-      <dd className="order-1 text-xl font-semibold tabular-nums tracking-tight [overflow-wrap:anywhere] @lg:text-2xl">{value}</dd>
-      {detail && <dd className="order-3 text-xs text-muted">{detail}</dd>}
+    <div className={`${card} flex flex-col gap-1 p-4`}>
+      <dt className="text-label-1 text-secondary">{label}</dt>
+      <dd className="text-heading-2 tabular-nums [overflow-wrap:anywhere] @lg:text-heading-1">{value}</dd>
+      {detail && <dd className="text-body-3 text-muted">{detail}</dd>}
     </div>
   );
 }

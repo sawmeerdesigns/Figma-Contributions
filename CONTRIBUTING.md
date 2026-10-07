@@ -37,7 +37,7 @@ npm run dev     # http://localhost:3000, shows the demo data
 
 - **Pure logic:** in `src/lib/` (Figma client, sync pipeline, contribution math), so it can be tested with plain Node.
 - **UI:** in `src/app/` and `src/components/`.
-- **Colors:** theme tokens in `src/app/globals.css`. Use them instead of hard-coded colors.
+- **Colors and type:** theme tokens in `src/app/globals.css`, taken from Sameer's Design System. Each variable names its Mapped token (for example `--brand` is `Action/Primary`). Use them, and the `text-heading-*`, `text-label-*` and `text-body-*` type styles, instead of hard-coded colors or sizes. Labels on gold use `text-on-brand`, never white.
 
 ## Testing
 

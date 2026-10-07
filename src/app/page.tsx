@@ -5,7 +5,8 @@ import { ContributionGraph, ContributionLegend } from "@/components/contribution
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProjectList } from "@/components/stats/ProjectList";
 import { StatsGrid } from "@/components/stats/StatsGrid";
-import { card, formatCount } from "@/components/ui";
+import { InfoIcon } from "@/components/icons";
+import { card, formatCount, page } from "@/components/ui";
 import { calculateStats, rankProjects } from "@/lib/contributions/calculate";
 import { shiftToToday } from "@/lib/contributions/demo";
 import { buildYearCalendar } from "@/lib/contributions/calendar";
@@ -49,42 +50,52 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const projects = rankProjects(data.files, year);
 
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-12 sm:py-16">
+    <main className={page}>
       <SiteHeader />
 
       {isDemo && (
-        <p role="status" className="w-fit max-w-full rounded-lg border border-brand/40 bg-brand/10 px-3 py-2 text-sm">
-          <span className="font-medium text-brand-text">Demo with made-up data.</span>{" "}
-          {DEMO_ONLY ? (
-            <>
-              Run it locally to see your own Figma activity:{" "}
-              <a href={REPO} className="font-medium text-brand-text underline underline-offset-2 hover:no-underline">
-                get it on GitHub
-              </a>
-              .
-            </>
-          ) : (
-            <>
-              Run <code className="font-mono">npm run sync</code> to see your own.
-            </>
-          )}
-        </p>
+        // Alert · Banner, Info tone
+        <div
+          role="status"
+          className="flex w-fit max-w-full items-start gap-2 rounded-lg border border-info-border bg-info-surface px-3 py-2 text-body-2"
+        >
+          <InfoIcon className="text-info-icon" />
+          <p>
+            <span className="font-semibold text-info-text">Demo with made-up data.</span>{" "}
+            {DEMO_ONLY ? (
+              <>
+                Run it locally to see your own Figma activity:{" "}
+                <a
+                  href={REPO}
+                  className="rounded-sm font-medium text-link underline underline-offset-2 transition-colors hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                >
+                  get it on GitHub
+                </a>
+                .
+              </>
+            ) : (
+              <>
+                Run <code className="font-mono text-code-2">npm run sync</code> to see your own.
+              </>
+            )}
+          </p>
+        </div>
       )}
 
       <section aria-labelledby="graph-title" className="flex w-fit max-w-full flex-col gap-4">
-        <div className={`${card} flex flex-col gap-3 p-4 sm:p-5`}>
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 id="graph-title" className="font-medium">
+        <div className={`${card} flex flex-col gap-4 p-4 sm:p-6`}>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 id="graph-title" className="text-heading-4">
               <span className="tabular-nums">{formatCount(total)}</span> version{total === 1 ? "" : "s"} in {year}
             </h2>
             {years.length > 1 && (
-              <nav aria-label="Year" className="flex gap-1 text-sm">
+              <nav aria-label="Year" className="flex gap-1">
                 {years.map((y) => (
                   <Link
                     key={y}
                     href={`/?year=${y}`}
                     aria-current={y === year ? "page" : undefined}
-                    className="rounded-md px-2.5 py-1 text-muted tabular-nums transition-colors hover:bg-line hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand aria-[current=page]:bg-brand aria-[current=page]:text-white"
+                    className="flex min-h-10 items-center rounded-lg px-3 text-label-1 tabular-nums text-secondary transition-colors hover:bg-surface-hover hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:min-h-8 aria-[current=page]:bg-brand aria-[current=page]:text-on-brand aria-[current=page]:hover:bg-brand-hover"
                   >
                     {y}
                   </Link>
@@ -98,9 +109,9 @@ export default async function Home({ searchParams }: PageProps<"/">) {
 
           <div className="flex flex-wrap items-center justify-between gap-2">
             {total === 0 ? (
-              <p className="text-sm text-muted">
-                No Figma activity in {year}. Add files to <code className="font-mono">FIGMA_FILE_KEYS</code> and run{" "}
-                <code className="font-mono">npm run sync</code>.
+              <p className="text-body-3 text-secondary">
+                No Figma activity in {year}. Add files to <code className="font-mono text-code-2">FIGMA_FILE_KEYS</code> and run{" "}
+                <code className="font-mono text-code-2">npm run sync</code>.
               </p>
             ) : (
               <span />

@@ -1,53 +1,154 @@
 @import "tailwindcss";
 
-/* Palette from roadmap Phase 13 (dark), with a light counterpart. */
+/*
+  Theme from Sameer's Design System (design.md): antique gold on warm neutrals, Light and Dark.
+  Each variable names the Mapped token it carries. Light first, Dark below.
+*/
 :root {
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --line: #e2e8f0;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --brand: #6d57e8;
-  --brand-text: #5641d0;
-  /* Heatmap levels 0–4 (lib/contributions getLevel), a ramp on the brand colour */
-  --level-0: #e9ecf3;
-  --level-1: #d6cffb;
-  --level-2: #a797f3;
-  --level-3: #6d57e8;
-  --level-4: #3f2fa8;
+  --background: #faf9f7; /* Surface/Primary */
+  --surface: #ffffff; /* Surface/Raised */
+  --surface-hover: #f5f3ef; /* Surface/Primary/Hover */
+  --surface-sunken: #f5f3ef; /* Surface/Secondary */
+  --line: #ded9d0; /* Border/Default (decorative) */
+  --foreground: #1e1b19; /* Text/Primary */
+  --secondary: #514b44; /* Text/Secondary */
+  --muted: #756e66; /* Text/Tertiary */
+  --brand: #e4b64e; /* Action/Primary */
+  --brand-hover: #c9a24b; /* Action/Primary/Hover */
+  --brand-pressed: #b68f39; /* Action/Primary/Pressed */
+  --on-brand: #121110; /* Text/Button/Primary */
+  --brand-text: #765a1b; /* Text/Brand */
+  --link: #765a1b; /* Text/Link */
+  --focus: #9a7628; /* Border/Focus */
+  --inverse: #121110; /* Surface/Inverse */
+  --on-inverse: #faf9f7; /* Text/Inverse */
+  --info-surface: #eff7fa; /* Status/Info/Surface */
+  --info-text: #285f74; /* Status/Info/Text */
+  --info-icon: #32758d; /* Status/Info/Icon */
+  --info-border: #bbdde8; /* Status/Info/Border */
+  --error-surface: #fff1ef; /* Status/Error/Surface */
+  --error-text: #91302c; /* Status/Error/Text */
+  --error-icon: #ae3b35; /* Status/Error/Icon */
+  --error-border: #f8c4be; /* Status/Error/Border */
+  /*
+    Heatmap levels 0–4 (lib/contributions getLevel). The system has no sequential Data token,
+    so the ramp steps through Brand primitives, with Surface/Tertiary for empty days.
+  */
+  --level-0: #ece9e3; /* Surface/Tertiary */
+  --level-1: #f1cc70; /* Brand/300 */
+  --level-2: #c9a24b; /* Brand/500 */
+  --level-3: #9a7628; /* Brand/700 */
+  --level-4: #57400f; /* Brand/900 */
+  /* Surface/Raised can't separate from the page by lightness in Light (1.12:1), so it takes Shadow/Brand/1. */
+  --card-shadow: 0 1px 2px rgb(182 143 57 / 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #020617;
-    --surface: #0f1728;
-    --line: #1e293b;
-    --foreground: #f1f5f9;
-    --muted: #94a3b8;
-    --brand: #6d57e8;
-    --brand-text: #a99cf6;
-    --level-0: #1a2338;
-    --level-1: #2f2a6e;
-    --level-2: #4b3cb4;
-    --level-3: #6d57e8;
-    --level-4: #b9aeff;
+    --background: #121110;
+    --surface: #1e1b19;
+    --surface-hover: #35312d;
+    --surface-sunken: #121110;
+    --line: #514b44;
+    --foreground: #faf9f7;
+    --secondary: #ded9d0;
+    --muted: #c7c0b5;
+    --brand: #e4b64e;
+    --brand-hover: #c9a24b;
+    --brand-pressed: #b68f39;
+    --on-brand: #121110;
+    --brand-text: #c9a24b;
+    --link: #e4b64e;
+    --focus: #c9a24b;
+    --inverse: #faf9f7;
+    --on-inverse: #121110;
+    --info-surface: #102a35;
+    --info-text: #8fc5d5;
+    --info-icon: #63abc1;
+    --info-border: #204c5d;
+    --error-surface: #381512;
+    --error-text: #e47a73;
+    --error-icon: #e47a73;
+    --error-border: #732723;
+    --level-0: #35312d; /* Surface/Tertiary */
+    --level-1: #57400f; /* Brand/900 */
+    --level-2: #9a7628; /* Brand/700 */
+    --level-3: #c9a24b; /* Brand/500 */
+    --level-4: #f1cc70; /* Brand/300 */
+    /* Dark separates Surface/Raised by lightness; no shadow. */
+    --card-shadow: none;
   }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-sunken: var(--surface-sunken);
   --color-line: var(--line);
   --color-foreground: var(--foreground);
+  --color-secondary: var(--secondary);
   --color-muted: var(--muted);
   --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-pressed: var(--brand-pressed);
+  --color-on-brand: var(--on-brand);
   --color-brand-text: var(--brand-text);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-link: var(--link);
+  --color-focus: var(--focus);
+  --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse);
+  --color-info-surface: var(--info-surface);
+  --color-info-text: var(--info-text);
+  --color-info-icon: var(--info-icon);
+  --color-info-border: var(--info-border);
+  --color-error-surface: var(--error-surface);
+  --color-error-text: var(--error-text);
+  --color-error-icon: var(--error-icon);
+  --color-error-border: var(--error-border);
+  --shadow-card: var(--card-shadow);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-roboto-mono);
+}
+
+/* Type styles (design.md Typography). Figma's −2% / −1% tracking becomes −0.02em / −0.01em. */
+@theme {
+  --text-heading-1: 24px;
+  --text-heading-1--line-height: 32px;
+  --text-heading-1--font-weight: 600;
+  --text-heading-1--letter-spacing: -0.01em;
+  --text-heading-2: 20px;
+  --text-heading-2--line-height: 28px;
+  --text-heading-2--font-weight: 600;
+  --text-heading-2--letter-spacing: -0.01em;
+  --text-heading-4: 16px;
+  --text-heading-4--line-height: 24px;
+  --text-heading-4--font-weight: 600;
+  --text-heading-4--letter-spacing: -0.01em;
+  --text-body-2: 14px;
+  --text-body-2--line-height: 21px;
+  --text-body-3: 13px;
+  --text-body-3--line-height: 20px;
+  --text-label-1: 14px;
+  --text-label-1--line-height: 20px;
+  --text-label-1--font-weight: 500;
+  --text-label-2: 12px;
+  --text-label-2--line-height: 16px;
+  --text-label-2--font-weight: 500;
+  --text-label-3: 11px;
+  --text-label-3--line-height: 14px;
+  --text-label-3--font-weight: 500;
+  --text-code-2: 12px;
+  --text-code-2--line-height: 18px;
+
+  /* Motion: Duration/Fast and Easing/Standard by default. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-transition-duration: 120ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }

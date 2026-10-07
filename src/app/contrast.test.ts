@@ -5,6 +5,7 @@ import { test } from "node:test";
 // WCAG 2.2 AA contrast for the theme tokens in globals.css, both themes.
 // Heatmap cells are not checked against 3:1: every cell's count is also given as text
 // (accessible name, tooltip, stats), so colour is not the only way to read it (roadmap Phase 14).
+// The "#ffffff on brand" pair is gone on purpose: labels on gold use on-brand (Text/Button/Primary).
 const css = readFileSync(new URL("./globals.css", import.meta.url), "utf8");
 const tokens = (block: string) =>
   Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
@@ -25,17 +26,27 @@ const ratio = (a: string, b: string) => {
 
 const TEXT = 4.5;
 const UI = 3;
-// [foreground, background, minimum]; "#ffffff" is literal white text on brand buttons and the selected year.
+// [foreground, background, minimum]. Pairs the UI actually uses (Sameer's Design System tokens).
 const PAIRS: [string, string, number][] = [
   ["foreground", "surface", TEXT],
   ["foreground", "background", TEXT],
+  ["secondary", "surface", TEXT],
   ["muted", "surface", TEXT],
   ["muted", "background", TEXT],
   ["brand-text", "surface", TEXT],
-  ["brand-text", "background", TEXT],
-  ["#ffffff", "brand", TEXT],
-  ["brand", "surface", UI], // focus ring
-  ["brand", "background", UI],
+  ["on-brand", "brand", TEXT], // selected year, Try again
+  ["on-brand", "brand-hover", TEXT],
+  ["on-brand", "brand-pressed", TEXT],
+  ["on-inverse", "inverse", TEXT], // tooltip
+  ["foreground", "info-surface", TEXT], // demo banner
+  ["info-text", "info-surface", TEXT],
+  ["link", "info-surface", TEXT],
+  ["info-icon", "info-surface", UI],
+  ["error-text", "error-surface", TEXT], // error alert
+  ["secondary", "error-surface", TEXT],
+  ["error-icon", "error-surface", UI],
+  ["focus", "surface", UI], // focus ring
+  ["focus", "background", UI],
 ];
 
 for (const [name, theme] of [["light", light], ["dark", dark]] as const) {

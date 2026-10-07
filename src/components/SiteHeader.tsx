@@ -10,8 +10,8 @@ export function SiteHeader() {
         ))}
       </svg>
       <div className="flex flex-col">
-        <h1 className="text-xl font-semibold tracking-tight">Figma Contributions</h1>
-        <p className="text-sm text-muted">Figma activity, not productivity. Each saved version counts once.</p>
+        <h1 className="text-heading-1">Figma Contributions</h1>
+        <p className="text-body-2 text-secondary">Figma activity, not productivity. Each saved version counts once.</p>
       </div>
     </header>
   );

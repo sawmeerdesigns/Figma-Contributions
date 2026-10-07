@@ -8,7 +8,7 @@ GitHub's contribution graph, for Figma. A local-first, open-source app that turn
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/screenshots/light.png">
-  <img alt="Heatmap of a year of Figma versions with stats: 875 contributions, 157 active days, longest streak 10 days" src="docs/screenshots/dark.png">
+  <img alt="Gold heatmap of a year of Figma versions with stats: 876 contributions, 158 active days, longest streak 10 days" src="docs/screenshots/dark.png">
 </picture>
 
 <sub>Screenshot uses the bundled demo data.</sub>

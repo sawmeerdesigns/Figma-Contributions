@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ### Added
 
+- **Portfolio embed:** `npm run export` saves just the contribution calendar as a standalone SVG (`data/contributions.svg`, gitignored), with only daily counts in it. Options: `--year`, `--theme auto|light|dark` (fixed themes use plain colors, for design tools), `--transparent`, `--out`, `--demo`. Colors are read from `globals.css`, so the export always matches the app. A guide, [docs/embedding.md](docs/embedding.md), covers websites, Next.js, GitHub profiles, Figma, Framer, Webflow and Notion, keeping it fresh, and privacy.
+- **README:** new "Using the app" and "Add it to your portfolio" sections.
 - **Light/dark toggle** in the header (Icon Button, 40×40 target). It follows the system setting until clicked, then remembers the choice (`localStorage`). A small script applies the theme before first paint, so there's no flash, and the toggle exposes its state with `aria-pressed`.
 - **Footer** with "Made by sawmeerdesigns", a bold "Get it now on GitHub" link and the demo notice, which moved here from the top of the page. A "Demo data" tag next to the graph title keeps it clear the data is made up.
 

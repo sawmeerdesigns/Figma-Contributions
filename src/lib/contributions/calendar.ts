@@ -34,3 +34,15 @@ export function buildYearCalendar(counts: DailyCounts, year: number, weekStart: 
 
   return { weeks, months };
 }
+
+// "4 versions on Tuesday, September 29, 2026": a day's accessible name and tooltip, in the app and the SVG export.
+export function describeDay({ date, count }: ContributionDay) {
+  const when = new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  return `${count === 0 ? "No" : count.toLocaleString("en-US")} version${count === 1 ? "" : "s"} on ${when}`;
+}

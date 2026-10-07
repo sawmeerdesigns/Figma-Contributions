@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
-import { formatCount } from "@/components/ui";
 import type { Level } from "@/lib/contributions/calculate";
-import type { ContributionDay, YearCalendar } from "@/lib/contributions/calendar";
+import { describeDay, type ContributionDay, type YearCalendar } from "@/lib/contributions/calendar";
 
 const LEVELS: Level[] = [0, 1, 2, 3, 4];
 // Sunday-start rows (buildYearCalendar default); label every other row like GitHub.
@@ -17,17 +16,6 @@ const ARROWS: Record<string, [number, number]> = {
 
 const monthName = (month: number) =>
   new Date(Date.UTC(2000, month, 1)).toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-
-export function describeDay({ date, count }: ContributionDay) {
-  const when = new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-  return `${count === 0 ? "No" : formatCount(count)} version${count === 1 ? "" : "s"} on ${when}`;
-}
 
 // 12px cells, 4px apart (Spacing/SM). The radius is a deliberate 3px: Radius/Small (6px) would turn them into dots.
 function Cell({ level }: { level: Level }) {

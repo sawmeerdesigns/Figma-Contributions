@@ -31,6 +31,8 @@ coverage/
 # real synced Figma data (demo data is committed separately)
 data/contributions.json
 data/contributions.json.tmp
+# exported calendar images (made from your real data; publish them on purpose)
+data/*.svg
 *.pem
 .pnp
 .pnp.*

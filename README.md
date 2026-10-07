@@ -28,6 +28,7 @@ Developers get a picture of their work over time for free on GitHub. Designers d
 - **Fast re-syncs:** after the first sync, only new versions are fetched, usually one request per file.
 - **Dark and light themes** with a toggle in the header. It follows your system setting until you choose, then remembers the choice.
 - **Responsive** down to 320px, keyboard and screen reader accessible.
+- **Portfolio embed:** `npm run export` saves just the calendar as an SVG image for your portfolio, GitHub profile, Notion, Framer or Figma. See [Add it to your portfolio](#add-it-to-your-portfolio).
 - **Demo mode:** with no synced data, the app shows made-up data, shifted so the latest day is always today. A public deployment always shows the demo.
 
 ## Architecture
@@ -53,13 +54,14 @@ npm run sync                                   npm run dev / build
 | Path | What it does |
 |---|---|
 | `scripts/sync.ts` | Reads config, runs the sync, writes the data file, prints a summary |
+| `scripts/export.ts` | Draws the calendar as a standalone SVG for portfolios (`npm run export`) |
 | `src/lib/sync.ts` | The sync pipeline: fetch, keep your versions, count per day, merge with the last sync |
 | `src/lib/figma/` | Figma API client (errors, retries, rate limits), version paging, file key/URL parsing |
-| `src/lib/contributions/` | Daily counts, levels, stats, project ranking, year calendar, year selection |
+| `src/lib/contributions/` | Daily counts, levels, stats, project ranking, year calendar, year selection, SVG rendering |
 | `src/app/` | The page, loading and error states, theme (`globals.css`) |
 | `src/components/` | Heatmap, stats, projects list, header with theme toggle, footer |
 | `data/demo.json` | Made-up demo data (committed) |
-| `docs/` | [Roadmap](docs/roadmap.md) and [project definition and decisions](docs/phase-1.md#31-phase-1-decisions-resolved-gaps) |
+| `docs/` | [Portfolio embed guide](docs/embedding.md), [roadmap](docs/roadmap.md) and [project definition and decisions](docs/phase-1.md#31-phase-1-decisions-resolved-gaps) |
 
 ## Requirements
 
@@ -168,6 +170,50 @@ Figma API requests: 4
 
 Thresholds live in `getLevel` (`src/lib/contributions/calculate.ts`). They're applied when the page loads, so changing them doesn't need a re-sync.
 
+## Using the app
+
+Once you've synced, `npm run dev` opens your dashboard at http://localhost:3000:
+
+- **Heatmap:** one cell per day of the year. Darker or brighter gold means more versions. Hover a day, or tap it on a phone, to see the exact count.
+- **Year tabs** (top right of the heatmap) switch years. You can also open any year directly, for example http://localhost:3000/?year=2025.
+- **Stats** for the selected year: contributions, active days, longest streak, most active day and month. The current streak always counts up to today.
+- **Most active projects:** which files you worked in most that year.
+- **Theme toggle** (top right): switches light and dark, and remembers your choice.
+- **Keyboard:** Tab to the heatmap, then use the arrow keys to move between days. Home and End jump to the start or end of the row; Ctrl (⌘ on Mac) + Home or End jump to the first or last day of the year. Escape hides the tooltip.
+
+A good routine is to run `npm run sync` whenever you want fresh numbers, for example at the end of the week. After the first sync it takes a second or two.
+
+**Ways to use it:**
+- **Portfolio and personal site:** show your design activity next to your work ([how](#add-it-to-your-portfolio)).
+- **GitHub profile README:** a Figma graph next to your GitHub one.
+- **Reviews and retrospectives:** see when you were busiest and which projects took your time.
+- **Habits:** keep a streak going, or spot burnout weeks.
+
+Remember it measures **activity, not productivity**. A quiet week of sketching on paper won't show up, and an autosave-heavy afternoon can look busier than it was.
+
+## Add it to your portfolio
+
+Export just the calendar as one SVG image:
+
+```bash
+npm run sync
+npm run export                     # → data/contributions.svg, follows light/dark
+npm run export -- --theme dark     # fixed colors, for Figma, Framer, Webflow
+```
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/embed-dark.svg">
+  <img alt="Exported calendar: 876 Figma versions in 2026" src="docs/screenshots/embed-light.svg">
+</picture>
+
+Then add it wherever images go:
+
+```html
+<img src="figma-contributions.svg" alt="My Figma activity in 2026" style="max-width: 100%; height: auto" />
+```
+
+The export holds only daily counts, with no file names or keys. **[The embed guide](docs/embedding.md)** has step-by-step instructions for websites, Next.js, GitHub profile READMEs, Figma, Framer, Webflow and Notion, plus all options, how to keep the image up to date, and exactly what you're publishing.
+
 ## Development
 
 | Command | What it does |
@@ -178,6 +224,7 @@ Thresholds live in `getLevel` (`src/lib/contributions/calculate.ts`). They're ap
 | `npm run lint` | ESLint |
 | `npm run build` / `npm start` | Production build and server |
 | `npm run sync` | Sync with Figma (needs `.env.local`) |
+| `npm run export` | Save the calendar as an SVG ([options](docs/embedding.md#options)) |
 
 - **CI** (`.github/workflows/ci.yml`) runs test, typecheck, lint and build on every push and pull request.
 - **Demo mode:** with no `data/contributions.json`, the page uses `data/demo.json`. To see the demo with your file in place, run `DEMO_MODE=1 npm run dev`.

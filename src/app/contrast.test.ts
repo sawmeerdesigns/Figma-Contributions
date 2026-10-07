@@ -1,16 +1,13 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
+import { readThemeTokens } from "../lib/theme.ts";
 
 // WCAG 2.2 AA contrast for the theme tokens in globals.css, both themes.
 // Heatmap cells are not checked against 3:1: every cell's count is also given as text
 // (accessible name, tooltip, stats), so colour is not the only way to read it (roadmap Phase 14).
 // The "#ffffff on brand" pair is gone on purpose: labels on gold use on-brand (Text/Button/Primary).
-const css = readFileSync(new URL("./globals.css", import.meta.url), "utf8");
-const tokens = (block: string) =>
-  Object.fromEntries([...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
-const light = tokens(css.match(/:root \{([^}]*)\}/)![1]);
-const dark = { ...light, ...tokens(css.match(/:root\[data-theme="dark"\] \{([^}]*)\}/)![1]) };
+const { light, dark } = readThemeTokens(readFileSync(new URL("./globals.css", import.meta.url), "utf8"));
 
 function luminance(hex: string) {
   const [r, g, b] = [1, 3, 5].map((i) => {

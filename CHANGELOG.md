@@ -4,6 +4,8 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-07
+
 ### Added
 
 - **Portfolio embed:** `npm run export` saves just the contribution calendar as a standalone SVG (`data/contributions.svg`, gitignored), with only daily counts in it. Options: `--year`, `--theme auto|light|dark` (fixed themes use plain colors, for design tools), `--transparent`, `--out`, `--demo`. Colors are read from `globals.css`, so the export always matches the app. A guide, [docs/embedding.md](docs/embedding.md), covers websites, Next.js, GitHub profiles, Figma, Framer, Webflow and Notion, keeping it fresh, and privacy.
@@ -46,5 +48,6 @@ First release.
 
 - The Figma token is only read by the sync script and only sent to `https://api.figma.com`; the client refuses any other host, even one named in a pagination link.
 
-[Unreleased]: https://github.com/sawmeerdesigns/Figma-Contributions/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/sawmeerdesigns/Figma-Contributions/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/sawmeerdesigns/Figma-Contributions/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sawmeerdesigns/Figma-Contributions/releases/tag/v1.0.0
